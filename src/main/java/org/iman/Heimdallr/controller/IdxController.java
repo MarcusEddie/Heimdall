@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iman.Heimdall.controller;
+package org.iman.Heimdallr.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
