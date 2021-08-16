@@ -3,6 +3,9 @@
  */
 package org.iman.Heimdallr.controller;
 
+import javax.annotation.Resource;
+
+import org.iman.Heimdallr.service.HelloWordService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class IdxController {
 
+    @Resource
+    private HelloWordService helloWorldService;
+    
     @RequestMapping("/index")
     public String index() {
-        return "hello world";
+        String name = helloWorldService.getById(1L);
+        return "hello : " + name;
     }
 }
