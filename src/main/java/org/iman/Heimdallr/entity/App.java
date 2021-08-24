@@ -10,7 +10,7 @@ import java.util.List;
  * @author ey
  *
  */
-public class System implements Serializable{
+public class App implements Serializable{
 
     private static final long serialVersionUID = -4999070610134732540L;
 
@@ -20,15 +20,15 @@ public class System implements Serializable{
 
     private List<Module> modules;
 
-    public System() {
+    public App() {
         super();
     }
 
-    public System(Long id) {
+    public App(Long id) {
         this.id = id;
     }
 
-    public System(Long id, String name) {
+    public App(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -59,6 +59,6 @@ public class System implements Serializable{
 
     @Override
     public String toString() {
-        return "System [id=" + id + ", name=" + name + ", modules=" + modules + "]";
+        return "app [id=" + id + ", name=" + name + ", modules=" + modules + "]";
     }
 }

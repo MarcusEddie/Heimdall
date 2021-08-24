@@ -9,7 +9,7 @@ package org.iman.Heimdallr.constant;
  */
 public enum AppLevel {
 
-    SYSTEM(1), MODULE(2), FUNCTION(3);
+    APP(1), MODULE(2), FUNCTION(3);
 
     private Integer level;
 

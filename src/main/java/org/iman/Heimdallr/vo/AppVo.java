@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 
-public class SystemVo implements Serializable {
+public class AppVo implements Serializable {
 
     private static final long serialVersionUID = -1330707538250336640L;
 
@@ -26,11 +26,11 @@ public class SystemVo implements Serializable {
     @JsonProperty("modules")
     private List<ModuleVo> modules;
 
-    public SystemVo() {
+    public AppVo() {
         super();
     }
 
-    public SystemVo(Long id) {
+    public AppVo(Long id) {
         this.id = id;
     }
 
@@ -60,7 +60,7 @@ public class SystemVo implements Serializable {
 
     @Override
     public String toString() {
-        return "AppStructureVo [id=" + id + ", name=" + name + ", modules=" + modules + "]";
+        return "AppVo [id=" + id + ", name=" + name + ", modules=" + modules + "]";
     }
 
 }

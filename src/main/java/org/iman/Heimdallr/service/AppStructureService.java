@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.iman.Heimdallr.constant.AppLevel;
+import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
-import org.iman.Heimdallr.entity.System;
 import org.iman.Heimdallr.vo.FunctionVo;
 import org.iman.Heimdallr.vo.ModuleVo;
-import org.iman.Heimdallr.vo.SystemVo;
+import org.iman.Heimdallr.vo.AppVo;
 
 /**
  * @author ey
@@ -19,7 +19,7 @@ import org.iman.Heimdallr.vo.SystemVo;
  */
 public interface AppStructureService {
 
-    public AppStructure saveSystem(SystemVo obj);
+    public AppStructure saveApp(AppVo obj);
     
     public AppStructure saveModule(ModuleVo obj);
     
@@ -32,5 +32,5 @@ public interface AppStructureService {
     
     public Optional<AppStructure> getStructures(String name, AppLevel level, Long root);
     
-    public System saveComponentTree(String systemVal, String moduleVal, String functionVal);
+    public App saveComponentTree(String appVal, String moduleVal, String functionVal);
 }

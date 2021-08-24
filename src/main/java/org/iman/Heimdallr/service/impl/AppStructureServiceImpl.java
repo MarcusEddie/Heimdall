@@ -12,15 +12,15 @@ import java.util.Optional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.iman.Heimdallr.constant.AppLevel;
+import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
 import org.iman.Heimdallr.entity.Function;
 import org.iman.Heimdallr.entity.Module;
-import org.iman.Heimdallr.entity.System;
 import org.iman.Heimdallr.mapper.AppStructureMapper;
 import org.iman.Heimdallr.service.AppStructureService;
 import org.iman.Heimdallr.vo.FunctionVo;
 import org.iman.Heimdallr.vo.ModuleVo;
-import org.iman.Heimdallr.vo.SystemVo;
+import org.iman.Heimdallr.vo.AppVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,24 +40,24 @@ public class AppStructureServiceImpl implements AppStructureService {
 
     @Override
     @Transactional
-    public AppStructure saveSystem(SystemVo obj) {
-        AppStructure system = convertToAppStructure(obj.getName(), null, AppLevel.SYSTEM);
-        Optional<AppStructure> queryRs = getStructures(system.getName(), AppLevel.SYSTEM, 0L);
+    public AppStructure saveApp(AppVo obj) {
+        AppStructure app = convertToAppStructure(obj.getName(), null, AppLevel.APP);
+        Optional<AppStructure> queryRs = getStructures(app.getName(), AppLevel.APP, 0L);
         if (queryRs.isEmpty()) {
-            appStructure.insert(system);
+            appStructure.insert(app);
         }
         if (CollectionUtils.sizeIsEmpty(obj.getModules())) {
-            return system;
+            return app;
         }
 
         Iterator<ModuleVo> it = obj.getModules().iterator();
         while (it.hasNext()) {
             ModuleVo vo = (ModuleVo) it.next();
-            vo.setRoot(system.getId());
+            vo.setRoot(app.getId());
             saveModule(vo);
 
         }
-        return system;
+        return app;
     }
 
     @Override
@@ -139,32 +139,32 @@ public class AppStructureServiceImpl implements AppStructureService {
 
     @Override
     @Transactional
-    public System saveComponentTree(String systemVal, String moduleVal, String functionVal) {
-        if (!StringUtils.isNoneBlank(systemVal.strip(), moduleVal.strip(), functionVal.strip())) {
-            throw new IllegalArgumentException("System, module and function is required");
+    public App saveComponentTree(String appVal, String moduleVal, String functionVal) {
+        if (!StringUtils.isNoneBlank(appVal.strip(), moduleVal.strip(), functionVal.strip())) {
+            throw new IllegalArgumentException("appVal, moduleVal and functionVal is required");
         }
-        systemVal = systemVal.strip();
+        appVal = appVal.strip();
         moduleVal = moduleVal.strip();
         functionVal = functionVal.strip();
         
-        Long systemId = 0L, moduleId = 0L;
+        Long appId = 0L, moduleId = 0L;
         try {
-            systemId = Long.valueOf(systemVal);
-            Optional<AppStructure> system = getById(systemId);
-            if (system.isPresent()) {
-                systemVal = system.get().getName();
+            appId = Long.valueOf(appVal);
+            Optional<AppStructure> app = getById(appId);
+            if (app.isPresent()) {
+                appVal = app.get().getName();
             }
         } catch (Exception e) {
             if (log.isInfoEnabled()) {
-                log.info("Insert new system with name {}", systemVal);
+                log.info("Insert new app with name {}", appVal);
             }
-            SystemVo vo = new SystemVo();
-            vo.setName(systemVal);
-            AppStructure system = saveSystem(vo);
-            systemId = system.getId();
+            AppVo vo = new AppVo();
+            vo.setName(appVal);
+            AppStructure app = saveApp(vo);
+            appId = app.getId();
         }
         
-        System rs = new System(systemId, systemVal);
+        App rs = new App(appId, appVal);
         rs.setModules(new ArrayList<Module>());
         
         try {
@@ -179,13 +179,13 @@ public class AppStructureServiceImpl implements AppStructureService {
             }
             ModuleVo vo = new ModuleVo();
             vo.setName(moduleVal);
-            vo.setRoot(systemId);
+            vo.setRoot(appId);
             AppStructure module = saveModule(vo);
             moduleId = module.getId();
         }
 
         Module module = new Module(moduleId, moduleVal);
-        module.setRoot(systemId);
+        module.setRoot(appId);
         module.setFunctions(new ArrayList<Function>());
         
         FunctionVo vo = new FunctionVo();

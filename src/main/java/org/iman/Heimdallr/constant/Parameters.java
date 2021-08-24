@@ -8,8 +8,8 @@ package org.iman.Heimdallr.constant;
  *
  */
 public class Parameters {
-    public static final String SYSTEM_ID = "systemId";
-    public static final String SYSTEM_NAME = "systemName";
+    public static final String APP_ID = "appId";
+    public static final String APP_NAME = "appName";
     public static final String MODULE_ID = "moduleId";
     public static final String MODULE_NAME = "moduleName";
     public static final String FUNCTION_ID = "functionId";
