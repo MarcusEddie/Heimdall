@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.AppStructureMapper">
+    
+    <!-- 
+     <resultMap id="allFieldInAppStructure" type="org.iman.Heimdallr.entity.AppStructure" ></resultMap>
+     -->
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.AppStructure" resultType="org.iman.Heimdallr.entity.AppStructure">
+        select ast.id, ast.name, ast.level, ast.root, ast.enabled, ast.deleted, ast.createBy, ast.createTime, ast.modifiedBy, ast.modifiedTime
+        from  appStructure ast
+        where 1 = 1
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and ast.name = #{name} </if>
+        <if test = 'level != null'> and ast.level = #{level} </if>
+        <if test = 'id != null'> and ast.id = #{id} </if>
+        <if test = 'root != null'> and ast.root = #{root} </if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and ast.enabled = 0 </when>
+            <otherwise>and ast.enabled = 1 </otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and ast.deleted = 1 </when> 
+            <otherwise>and ast.deleted = 0 </otherwise>
+        </choose>
+    </select>
+</mapper>

@@ -22,7 +22,8 @@ public class IdxController {
     
     @RequestMapping("/index")
     public String index() {
-        String name = helloWorldService.getById(1L);
-        return "hello : " + name;
+//        String name = helloWorldService.getById(1L);
+//        return "hello : " + name;
+        return "hell world";
     }
 }
