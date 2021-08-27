@@ -10,7 +10,9 @@ package org.iman.Heimdallr.constant;
 public enum ErrorCode {
 
     SUCCESS("success", 200),
-    DATA_CONVERSION_FAILURE("Data Conversion Failure", 510);
+    DATA_CONVERSION_FAILURE("Data Conversion Failure", 510),
+    PARAMETERS_ARE_INVALID("Parameters are Invalid", 400),
+    DATA_IS_DELETED("Data is Deleted", 410);
     
     private String msg;
     private Integer code;

@@ -36,7 +36,7 @@ public class AppStructureServiceImpl implements AppStructureService {
 
     private static final Logger log = LoggerFactory.getLogger(AppStructureServiceImpl.class);
     @Autowired
-    private AppStructureMapper appStructure;
+    private AppStructureMapper appStructureMapper;
 
     @Override
     @Transactional
@@ -44,7 +44,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         AppStructure app = convertToAppStructure(obj.getName(), null, AppLevel.APP);
         Optional<AppStructure> queryRs = getStructures(app.getName(), AppLevel.APP, 0L);
         if (queryRs.isEmpty()) {
-            appStructure.insert(app);
+            appStructureMapper.insert(app);
         }
         if (CollectionUtils.sizeIsEmpty(obj.getModules())) {
             return app;
@@ -67,7 +67,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         Optional<AppStructure> queryRs = getStructures(module.getName(), AppLevel.MODULE,
                 module.getRoot());
         if (queryRs.isEmpty()) {
-            appStructure.insert(module);
+            appStructureMapper.insert(module);
         }
         if (CollectionUtils.sizeIsEmpty(obj.getFunctions())) {
             return module;
@@ -88,7 +88,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         Optional<AppStructure> queryRs = getStructures(func.getName(), AppLevel.FUNCTION,
                 func.getRoot());
         if (queryRs.isEmpty()) {
-            appStructure.insert(func);
+            appStructureMapper.insert(func);
         }
 
         return func;
@@ -100,7 +100,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         query.setLevel(level.getLevel());
         query.setRoot(root);
 
-        List<AppStructure> rs = appStructure.selectBy(query);
+        List<AppStructure> rs = appStructureMapper.selectBy(query);
         if (lexicographicOrder) {
             Collections.sort(rs);
         }
@@ -118,7 +118,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         query.setName(StringUtils.isNotBlank(name.strip()) ? name.strip() : null);
         query.setLevel(level.getLevel());
         query.setRoot(root);
-        List<AppStructure> rs = appStructure.selectBy(query);
+        List<AppStructure> rs = appStructureMapper.selectBy(query);
         if (CollectionUtils.sizeIsEmpty(rs)) {
             return Optional.empty();
         }
@@ -129,7 +129,7 @@ public class AppStructureServiceImpl implements AppStructureService {
     @Override
     public Optional<AppStructure> getById(Long id) {
         AppStructure query = new AppStructure(id);
-        List<AppStructure> rs = appStructure.selectBy(query);
+        List<AppStructure> rs = appStructureMapper.selectBy(query);
         if (CollectionUtils.sizeIsEmpty(rs)) {
             return Optional.empty();
         }
@@ -146,7 +146,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         appVal = appVal.strip();
         moduleVal = moduleVal.strip();
         functionVal = functionVal.strip();
-        
+
         Long appId = 0L, moduleId = 0L;
         try {
             appId = Long.valueOf(appVal);
@@ -163,10 +163,10 @@ public class AppStructureServiceImpl implements AppStructureService {
             AppStructure app = saveApp(vo);
             appId = app.getId();
         }
-        
+
         App rs = new App(appId, appVal);
         rs.setModules(new ArrayList<Module>());
-        
+
         try {
             moduleId = Long.valueOf(moduleVal);
             Optional<AppStructure> module = getById(moduleId);
@@ -187,7 +187,7 @@ public class AppStructureServiceImpl implements AppStructureService {
         Module module = new Module(moduleId, moduleVal);
         module.setRoot(appId);
         module.setFunctions(new ArrayList<Function>());
-        
+
         FunctionVo vo = new FunctionVo();
         vo.setName(functionVal);
         vo.setRoot(moduleId);
@@ -209,5 +209,55 @@ public class AppStructureServiceImpl implements AppStructureService {
         rs.setLevel(level.getLevel());
         return rs;
     }
-    
+
+    @Override
+    @Transactional
+    public Integer deleteComponent(Long appId, Long moduleId, Long functionId) {
+        Optional.ofNullable(appId).orElseThrow(() -> {
+            throw new IllegalArgumentException("AppId is required");
+        });
+        Optional.ofNullable(moduleId).orElseThrow(() -> {
+            throw new IllegalArgumentException("ModuleId is required");
+        });
+        Optional.ofNullable(functionId).orElseThrow(() -> {
+            throw new IllegalArgumentException("FunctionId is required");
+        });
+
+        AppStructure criteria = new AppStructure();
+        Integer cnt = 0;
+        if (appId.compareTo(0L) == 1 && moduleId.compareTo(0L) == 1 && functionId.compareTo(0L) == 1) {
+            // only delete function id
+            criteria.setId(functionId);
+            cnt = appStructureMapper.deleteBy(criteria);
+        } else if (appId.compareTo(0L) == 1 && moduleId.compareTo(0L) == 1 && functionId.compareTo(0L) == 0) {
+            // delete all function ids and moduel id
+            criteria.setRoot(moduleId);
+            cnt = appStructureMapper.deleteBy(criteria);
+            criteria.setRoot(null);
+            criteria.setId(moduleId);
+            cnt = cnt + appStructureMapper.deleteBy(criteria);
+        } else if (appId.compareTo(0L) == 1 && functionId.compareTo(0L) == 0 && moduleId.compareTo(0L) == 0) {
+            // delete all function ids, all module ids, and app id
+            List<AppStructure> modules = getStructures(AppLevel.MODULE, appId, false);
+            if (!CollectionUtils.sizeIsEmpty(modules)) {
+                AppStructure criteria2 = new AppStructure();
+                Iterator<AppStructure> it = modules.iterator();
+                while (it.hasNext()) {
+                    criteria2.setId(null);
+                    AppStructure appStructure = (AppStructure) it.next();
+                    criteria2.setRoot(appStructure.getId());
+                    cnt = cnt + appStructureMapper.deleteBy(criteria2);
+                    criteria2.setRoot(null);
+                    criteria2.setId(appStructure.getId());
+                    cnt = cnt + appStructureMapper.deleteBy(criteria2);
+                    
+                }
+            }
+            criteria.setId(appId);
+            cnt = cnt + appStructureMapper.deleteBy(criteria);
+        }
+        
+        return cnt;
+    }
+
 }

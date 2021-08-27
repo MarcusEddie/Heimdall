@@ -23,4 +23,6 @@ public interface AppStructureMapper extends BaseMapper<AppStructure> {
 
     public List<AppStructure> selectBy(AppStructure query);
 
+    public int deleteBy(AppStructure criteria);
+    
 }

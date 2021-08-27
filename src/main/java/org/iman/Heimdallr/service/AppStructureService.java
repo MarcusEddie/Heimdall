@@ -33,4 +33,6 @@ public interface AppStructureService {
     public Optional<AppStructure> getStructures(String name, AppLevel level, Long root);
     
     public App saveComponentTree(String appVal, String moduleVal, String functionVal);
+    
+    public Integer deleteComponent(Long appId, Long moduleId, Long functionId);
 }

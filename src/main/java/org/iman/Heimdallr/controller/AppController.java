@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -64,6 +65,23 @@ public class AppController {
 
         resp.setData(rs);
 
+        return resp;
+    }
+    
+    @PostMapping("getAppById")
+    public Response<AppVo> getApptionById(@RequestBody ObjectNode req){
+        Response<AppVo> resp = new Response<AppVo>();
+        Long id = req.get(Parameters.ID).asLong();
+        Optional<AppStructure> rs = appStructureService.getById(id);
+        if (rs.isEmpty()) {
+            resp.setSuccess(false);
+            resp.setErrorCode(ErrorCode.DATA_IS_DELETED.getCode());
+            resp.setErrorMsg(ErrorCode.DATA_IS_DELETED.getMsg());
+        }
+        
+        AppVo vo = new AppVo(rs.get().getId());
+        vo.setName(rs.get().getName());
+        resp.setData(vo);
         return resp;
     }
 
@@ -126,7 +144,6 @@ public class AppController {
                 req.get(Parameters.FUNCTION_NAME).asText());
         
         try {
-            
             AppVo rs = BeanUtils.copy(app, AppVo.class);
             resp.setData(rs);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -141,5 +158,27 @@ public class AppController {
         
         return resp;
     }
+    
+    @PostMapping("/deleteAppComponent")
+    public Response<Integer> deleteStructure(@RequestBody ObjectNode req) {
+        Response<Integer> resp = new Response<Integer>();
+        System.out.println(req.toString());
+        Long appVal = req.get(Parameters.APP_ID).asLong();
+        Long moduleVal = req.get(Parameters.MODULE_ID).asLong();
+        Long functioVal = req.get(Parameters.FUNCTION_ID).asLong();
+        
+        if (appVal.compareTo(0L) == 0) {
+            resp.setSuccess(false);
+            resp.setErrorCode(ErrorCode.PARAMETERS_ARE_INVALID.getCode());
+            resp.setErrorMsg(ErrorCode.PARAMETERS_ARE_INVALID.getMsg());
+            return resp;
+        }
+        
+        Integer effectedRows = appStructureService.deleteComponent(appVal, moduleVal, functioVal);
+        resp.setData(effectedRows);
+        
+        return resp;
+    }
+    
 
 }
