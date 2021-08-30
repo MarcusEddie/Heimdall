@@ -4,6 +4,8 @@
 package org.iman.Heimdallr.vo;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * @author ey
@@ -19,6 +21,7 @@ public class Response<T> implements Serializable {
     private String errorMsg;
     private String traceId;
     private String host;
+    private LocalDateTime timeStamp;
 
     public Response() {
         super();
@@ -85,10 +88,22 @@ public class Response<T> implements Serializable {
         this.traceId = traceId;
     }
 
+    public LocalDateTime getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public Response<T> mkTime(){
+        setTimeStamp(LocalDateTime.now(ZoneOffset.UTC));
+        return this;
+    }
     @Override
     public String toString() {
         return "Response [success=" + success + ", data=" + data + ", errorCode=" + errorCode
-                + ", errorMsg=" + errorMsg + ", traceId=" + traceId + ", host=" + host + "]";
+                + ", errorMsg=" + errorMsg + ", traceId=" + traceId + ", host=" + host
+                + ", timeStamp=" + timeStamp + "]";
     }
-
 }

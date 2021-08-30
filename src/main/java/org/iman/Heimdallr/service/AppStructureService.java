@@ -6,7 +6,7 @@ package org.iman.Heimdallr.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.iman.Heimdallr.constant.AppLevel;
+import org.iman.Heimdallr.constants.enums.AppLevel;
 import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
 import org.iman.Heimdallr.vo.FunctionVo;

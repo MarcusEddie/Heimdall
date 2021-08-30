@@ -12,13 +12,14 @@ import java.util.Optional;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.iman.Heimdallr.constant.AppLevel;
-import org.iman.Heimdallr.constant.ErrorCode;
-import org.iman.Heimdallr.constant.Parameters;
+import org.iman.Heimdallr.constants.enums.AppLevel;
+import org.iman.Heimdallr.constants.enums.ErrorCode;
+import org.iman.Heimdallr.constants.Parameters;
 import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
 import org.iman.Heimdallr.service.AppStructureService;
 import org.iman.Heimdallr.utils.BeanUtils;
+import org.iman.Heimdallr.utils.ControllerUtils;
 import org.iman.Heimdallr.vo.FunctionVo;
 import org.iman.Heimdallr.vo.ModuleVo;
 import org.iman.Heimdallr.vo.Response;
@@ -42,7 +43,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class AppController {
 
     private static final Logger log = LoggerFactory.getLogger(AppController.class);
-    
+
     @Resource
     private AppStructureService appStructureService;
 
@@ -65,11 +66,11 @@ public class AppController {
 
         resp.setData(rs);
 
-        return resp;
+        return resp.mkTime();
     }
-    
+
     @PostMapping("getAppById")
-    public Response<AppVo> getApptionById(@RequestBody ObjectNode req){
+    public Response<AppVo> getApptionById(@RequestBody ObjectNode req) {
         Response<AppVo> resp = new Response<AppVo>();
         Long id = req.get(Parameters.ID).asLong();
         Optional<AppStructure> rs = appStructureService.getById(id);
@@ -78,11 +79,11 @@ public class AppController {
             resp.setErrorCode(ErrorCode.DATA_IS_DELETED.getCode());
             resp.setErrorMsg(ErrorCode.DATA_IS_DELETED.getMsg());
         }
-        
+
         AppVo vo = new AppVo(rs.get().getId());
         vo.setName(rs.get().getName());
         resp.setData(vo);
-        return resp;
+        return resp.mkTime();
     }
 
     @PostMapping("/getModuleOptions")
@@ -91,7 +92,8 @@ public class AppController {
         Response<List<ModuleVo>> resp = new Response<List<ModuleVo>>();
         Long appId = req.get(Parameters.APP_ID).asLong();
 
-        List<AppStructure> modules = appStructureService.getStructures(AppLevel.MODULE, appId, true);
+        List<AppStructure> modules = appStructureService.getStructures(AppLevel.MODULE, appId,
+                true);
         if (CollectionUtils.sizeIsEmpty(modules)) {
             return resp;
         }
@@ -107,12 +109,11 @@ public class AppController {
 
         resp.setData(rs);
 
-        return resp;
+        return resp.mkTime();
     }
 
     @PostMapping("/getFuncOptions")
     public Response<List<FunctionVo>> getFuncOptionsByModule(@RequestBody ObjectNode req) {
-        java.lang.System.out.println("get function options by " + req.toString());
         Response<List<FunctionVo>> resp = new Response<List<FunctionVo>>();
         Long moduleId = req.get(Parameters.MODULE_ID).asLong();
         List<AppStructure> functions = appStructureService.getStructures(AppLevel.FUNCTION,
@@ -132,17 +133,38 @@ public class AppController {
         }
 
         resp.setData(rs);
-        return resp;
+        return resp.mkTime();
+    }
+
+    @PostMapping("getFunctionById")
+    public Response<FunctionVo> getFunctionById(@RequestBody ObjectNode req) {
+        Response<FunctionVo> resp = new Response<FunctionVo>();
+        Long functionId = req.get(Parameters.FUNCTION_ID).asLong();
+        Optional<AppStructure> function = appStructureService.getById(functionId);
+        if (function.isPresent()) {
+            try {
+                FunctionVo vo = BeanUtils.copy(function.get(), FunctionVo.class);
+                resp.setData(vo);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                if (log.isErrorEnabled()) {
+                    log.error("Convert FunctionVo from Function failed", e);
+                }
+                resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
+            }
+        }
+
+        return resp.mkTime();
     }
 
     @PostMapping("/saveNewAppComponent")
     public Response<AppVo> saveStructure(@RequestBody ObjectNode req) {
         Response<AppVo> resp = new Response<AppVo>();
 
-        App app = appStructureService.saveComponentTree(
-                req.get(Parameters.APP_NAME).asText(), req.get(Parameters.MODULE_NAME).asText(),
+        App app = appStructureService.saveComponentTree(req.get(Parameters.APP_NAME).asText(),
+                req.get(Parameters.MODULE_NAME).asText(),
                 req.get(Parameters.FUNCTION_NAME).asText());
-        
+
         try {
             AppVo rs = BeanUtils.copy(app, AppVo.class);
             resp.setData(rs);
@@ -155,10 +177,10 @@ public class AppController {
             resp.setErrorCode(ErrorCode.DATA_CONVERSION_FAILURE.getCode());
             resp.setErrorMsg(ErrorCode.DATA_CONVERSION_FAILURE.getMsg());
         }
-        
-        return resp;
+
+        return resp.mkTime();
     }
-    
+
     @PostMapping("/deleteAppComponent")
     public Response<Integer> deleteStructure(@RequestBody ObjectNode req) {
         Response<Integer> resp = new Response<Integer>();
@@ -166,19 +188,18 @@ public class AppController {
         Long appVal = req.get(Parameters.APP_ID).asLong();
         Long moduleVal = req.get(Parameters.MODULE_ID).asLong();
         Long functioVal = req.get(Parameters.FUNCTION_ID).asLong();
-        
+
         if (appVal.compareTo(0L) == 0) {
             resp.setSuccess(false);
             resp.setErrorCode(ErrorCode.PARAMETERS_ARE_INVALID.getCode());
             resp.setErrorMsg(ErrorCode.PARAMETERS_ARE_INVALID.getMsg());
             return resp;
         }
-        
+
         Integer effectedRows = appStructureService.deleteComponent(appVal, moduleVal, functioVal);
         resp.setData(effectedRows);
-        
-        return resp;
+
+        return resp.mkTime();
     }
-    
 
 }

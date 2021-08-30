@@ -6,6 +6,8 @@ package org.iman.Heimdallr.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.iman.Heimdallr.constants.Consts;
+
 /**
  * @author ey
  *
@@ -28,6 +30,10 @@ public class BaseEntity implements Serializable{
 
     public BaseEntity() {
         super();
+        setCreateBy(Consts.SYSTEM_ADMIN);
+        setCreateTime(LocalDateTime.now());
+        setEnabled(true);
+        setDeleted(false);
     }
 
     public String getCreateBy() {

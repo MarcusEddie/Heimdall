@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iman.Heimdallr.constant;
+package org.iman.Heimdallr.constants;
 
 /**
  * @author ey

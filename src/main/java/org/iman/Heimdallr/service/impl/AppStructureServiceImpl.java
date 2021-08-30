@@ -11,7 +11,7 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.iman.Heimdallr.constant.AppLevel;
+import org.iman.Heimdallr.constants.enums.AppLevel;
 import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
 import org.iman.Heimdallr.entity.Function;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.iman.Heimdallr.constant;
+package org.iman.Heimdallr.constants;
 
 /**
  * @author ey
@@ -15,5 +15,6 @@ public class Parameters {
     public static final String MODULE_NAME = "moduleName";
     public static final String FUNCTION_ID = "functionId";
     public static final String FUNCTION_NAME = "functionName";
+    public static final String CASE_DATA = "caseData";
 
 }

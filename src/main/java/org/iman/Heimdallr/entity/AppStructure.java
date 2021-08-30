@@ -6,7 +6,7 @@ package org.iman.Heimdallr.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import org.iman.Heimdallr.constant.Consts;
+import org.iman.Heimdallr.constants.Consts;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

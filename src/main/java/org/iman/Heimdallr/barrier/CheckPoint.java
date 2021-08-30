@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.iman.Heimdallr.constant.Rule;
+import org.iman.Heimdallr.constants.enums.Rule;
 
 /**
  * @author ey
