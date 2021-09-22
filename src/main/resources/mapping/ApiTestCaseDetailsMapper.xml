@@ -3,38 +3,52 @@
 <mapper namespace="org.iman.Heimdallr.mapper.ApiTestCaseDetailsMapper">
     
     <select id="selectBy" parameterType="org.iman.Heimdallr.entity.ApiTestCase" resultType="org.iman.Heimdallr.entity.ApiTestCase">
-        select atcd.id, atcd.generalCaseId, atcd.priority, atcd.apiId, atcd.name, atcd.header, atcd.steps, atcd.parameters, atcd.querySql, atcd.expectedResult, atcd.resultCheckMode, atcd.dbConnId, atcd.enabled, atcd.deleted, atcd.createBy, atcd.createTime, atcd.modifiedBy, atcd.modifiedTime
+        select atcd.id, atcd.appId, atcd.generalCaseId, atcd.priority, atcd.apiId, atcd.name, atcd.header, atcd.steps, atcd.parameters, atcd.querySql, atcd.expectedResult, atcd.resultCheckMode, atcd.dbConnId, atcd.enabled, atcd.deleted, atcd.createBy, atcd.createTime, atcd.modifiedBy, atcd.modifiedTime
         from  apiTestCaseDetails atcd
         where 1 = 1
-        <if test = 'id != null'> and atcd.id = #{id} </if>
-        <if test = 'generalCaseId != null'> and atcd.generalCaseId = #{generalCaseId} </if>
-        <if test = 'priority != null'> and atcd.priority = #{priority} </if>
-        <if test = 'apiId != null'> and atcd.apiId = #{apiId} </if>
-        <if test = 'name != null and name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{name}, '%')</if>
-        <if test = 'resultCheckMode != null'> and atcd.resultCheckMode = #{resultCheckMode} </if>
-        <if test = 'dbConnId != null'> and atcd.dbConnId = #{dbConnId} </if>
+        <if test = 'criteria.id != null'> and atcd.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and atcd.appId = #{criteria.appId} </if>
+        <if test = 'criteria.generalCaseId != null'> and atcd.generalCaseId = #{criteria.generalCaseId} </if>
+        <if test = 'criteria.priority != null'> and atcd.priority = #{criteria.priority} </if>
+        <if test = 'criteria.apiId != null'> and atcd.apiId = #{criteria.apiId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.resultCheckMode != null'> and atcd.resultCheckMode = #{criteria.resultCheckMode} </if>
+        <if test = 'criteria.dbConnId != null'> and atcd.dbConnId = #{criteria.dbConnId} </if>
+        <if test = 'apiIds != null and apiIds.size() > 0'> 
+            and atcd.apiId in
+            <foreach collection="apiIds" item = "caseId"  open="(" close=")" separator=",">
+                #{caseId}
+            </foreach>
+        </if>
         <choose>
-            <when test = 'enabled != null and enabled == false'> and atcd.enabled = 0 </when>
-            <when test = 'enabled != null and enabled == true'> and atcd.enabled = 1 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and atcd.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and atcd.enabled = 1 </when>
             <otherwise></otherwise>
         </choose>
         <choose>
-            <when test = 'deleted != null and deleted == true'> and atcd.deleted = 1 </when> 
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and atcd.deleted = 1 </when> 
             <otherwise>and atcd.deleted = 0 </otherwise>
         </choose>
     </select>
     
     <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.ApiTestCase" resultType="org.iman.Heimdallr.entity.ApiTestCase">
-        select atcd.id, atcd.generalCaseId, atcd.priority, atcd.apiId, atcd.name, atcd.header, atcd.steps, atcd.parameters, atcd.querySql, atcd.expectedResult, atcd.resultCheckMode, atcd.dbConnId, atcd.enabled, atcd.deleted, atcd.createBy, atcd.createTime, atcd.modifiedBy, atcd.modifiedTime
+        select atcd.id, atcd.appId,  atcd.generalCaseId, atcd.priority, atcd.apiId, atcd.name, atcd.header, atcd.steps, atcd.parameters, atcd.querySql, atcd.expectedResult, atcd.resultCheckMode, atcd.dbConnId, atcd.enabled, atcd.deleted, atcd.createBy, atcd.createTime, atcd.modifiedBy, atcd.modifiedTime
         from  apiTestCaseDetails atcd
         where 1 = 1
         <if test = 'criteria.id != null'> and atcd.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and atcd.appId = #{criteria.appId} </if>
         <if test = 'criteria.generalCaseId != null'> and atcd.generalCaseId = #{criteria.generalCaseId} </if>
         <if test = 'criteria.priority != null'> and atcd.priority = #{criteria.priority} </if>
         <if test = 'criteria.apiId != null'> and atcd.apiId = #{criteria.apiId} </if>
-        <if test = 'criteria.name != null and name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{criteria.name}, '%')</if>
         <if test = 'criteria.resultCheckMode != null'> and atcd.resultCheckMode = #{criteria.resultCheckMode} </if>
         <if test = 'criteria.dbConnId != null'> and atcd.dbConnId = #{criteria.dbConnId} </if>
+        <if test = 'apiIds != null and apiIds.size() > 0'> 
+            and atcd.apiId in
+            <foreach collection="apiIds" item = "caseId"  open="(" close=")" separator=",">
+                #{caseId}
+            </foreach>
+        </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and atcd.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and atcd.enabled = 1 </when>
@@ -52,20 +66,27 @@
         select count(atcd.id)
         from  apiTestCaseDetails atcd
         where 1 = 1
-        <if test = 'id != null'> and atcd.id = #{id} </if>
-        <if test = 'generalCaseId != null'> and atcd.generalCaseId = #{generalCaseId} </if>
-        <if test = 'priority != null'> and atcd.priority = #{priority} </if>
-        <if test = 'apiId != null'> and atcd.apiId = #{apiId} </if>
-        <if test = 'name != null and name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{name}, '%')</if>
-        <if test = 'resultCheckMode != null'> and atcd.resultCheckMode = #{resultCheckMode} </if>
-        <if test = 'dbConnId != null'> and atcd.dbConnId = #{dbConnId} </if>
+        <if test = 'criteria.id != null'> and atcd.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and atcd.appId = #{criteria.appId} </if>
+        <if test = 'criteria.generalCaseId != null'> and atcd.generalCaseId = #{criteria.generalCaseId} </if>
+        <if test = 'criteria.priority != null'> and atcd.priority = #{criteria.priority} </if>
+        <if test = 'criteria.apiId != null'> and atcd.apiId = #{criteria.apiId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and atcd.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.resultCheckMode != null'> and atcd.resultCheckMode = #{criteria.resultCheckMode} </if>
+        <if test = 'criteria.dbConnId != null'> and atcd.dbConnId = #{criteria.dbConnId} </if>
+        <if test = 'apiIds != null and apiIds.size() > 0'> 
+            and atcd.apiId in
+            <foreach collection="apiIds" item = "caseId"  open="(" close=")" separator=",">
+                #{caseId}
+            </foreach>
+        </if>
         <choose>
-            <when test = 'enabled != null and enabled == false'> and atcd.enabled = 0 </when>
-            <when test = 'enabled != null and enabled == true'> and atcd.enabled = 1 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and atcd.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and atcd.enabled = 1 </when>
             <otherwise></otherwise>
         </choose>
         <choose>
-            <when test = 'deleted != null and deleted == true'> and atcd.deleted = 1 </when> 
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and atcd.deleted = 1 </when> 
             <otherwise>and atcd.deleted = 0 </otherwise>
         </choose>
     </select>

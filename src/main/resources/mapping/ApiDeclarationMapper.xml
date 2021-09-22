@@ -29,21 +29,21 @@
         select ad.id, ad.appId, ad.moduleId, ad.functionId, ad.name, ad.url, ad.path, ad.method, ad.header, ad.arguments, ad.response, ad.enabled, ad.deleted, ad.createBy, ad.createTime, ad.modifiedBy, ad.modifiedTime
         from  apiDeclaration ad
         where 1 = 1
-        <if test = 'id != null'> and ad.id = #{id} </if>
-        <if test = 'appId != null'> and ad.appId = #{appId} </if>
-        <if test = 'moduleId != null'> and ad.moduleId = #{moduleId} </if>
-        <if test = 'functionId != null'> and ad.functionId = #{functionId} </if>
-        <if test = 'name != null and name.trim() != &quot;&quot;'> and ad.name like concat('%', #{name}, '%')</if>
-        <if test = 'url != null and url.trim() != &quot;&quot;'> and ad.url = #{url}</if>
-        <if test = 'path != null and path.trim() != &quot;&quot;'> and ad.path = #{path}</if>
-        <if test = 'method != null'> and ad.method = #{method}</if>
+        <if test = 'criteria.id != null'> and ad.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and ad.appId = #{criteria.appId} </if>
+        <if test = 'criteria.moduleId != null'> and ad.moduleId = #{criteria.moduleId} </if>
+        <if test = 'criteria.functionId != null'> and ad.functionId = #{criteria.functionId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and ad.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.url != null and criteria.url.trim() != &quot;&quot;'> and ad.url = #{criteria.url}</if>
+        <if test = 'criteria.path != null and criteria.path.trim() != &quot;&quot;'> and ad.path = #{criteria.path}</if>
+        <if test = 'criteria.method != null'> and ad.method = #{criteria.method}</if>
         <choose>
-            <when test = 'enabled != null and enabled == false'> and ad.enabled = 0 </when>
-            <when test = 'enabled != null and enabled == true'> and ad.enabled = 1 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and ad.enabled = 1 </when>
             <otherwise></otherwise>
         </choose>
         <choose>
-            <when test = 'deleted != null and deleted == true'> and ad.deleted = 1 </when> 
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and ad.deleted = 1 </when> 
             <otherwise>and ad.deleted = 0 </otherwise>
         </choose>
         limit #{offset}, #{capacity}

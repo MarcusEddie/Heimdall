@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
+import org.iman.Heimdallr.constants.enums.TestCaseState;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,20 +16,24 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author ey
  *
  */
-public class ApiTestCaseVo implements Serializable{
+public class ApiTestCaseVo implements Serializable {
 
     private static final long serialVersionUID = 5970435435666564364L;
 
     @JsonProperty("id")
     private Long id;
+    @JsonProperty("appId")
+    private Long appId;
     @JsonProperty("generalCaseId")
     private Long generalCaseId;
+    @JsonProperty("generalCaseName")
+    private String generalCaseName;
     @JsonProperty("priority")
     private CasePriority priority;
     @JsonProperty("apiId")
     private Long apiId;
-    @JsonProperty("apiName")
-    private String apiName;
+    @JsonProperty("api")
+    private ApiDeclarationVo api;
     @JsonProperty("name")
     private String name;
     @JsonProperty("header")
@@ -47,6 +52,8 @@ public class ApiTestCaseVo implements Serializable{
     private String dbConnName;
     @JsonProperty("querySql")
     private String querySql;
+    @JsonProperty("state")
+    private TestCaseState state;
     
     public ApiTestCaseVo() {
         super();
@@ -63,6 +70,14 @@ public class ApiTestCaseVo implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Long appId) {
+        this.appId = appId;
     }
 
     public Long getGeneralCaseId() {
@@ -152,13 +167,21 @@ public class ApiTestCaseVo implements Serializable{
     public void setQuerySql(String querySql) {
         this.querySql = querySql;
     }
-
-    public String getApiName() {
-        return apiName;
+   
+    public String getGeneralCaseName() {
+        return generalCaseName;
     }
 
-    public void setApiName(String apiName) {
-        this.apiName = apiName;
+    public void setGeneralCaseName(String generalCaseName) {
+        this.generalCaseName = generalCaseName;
+    }
+
+    public ApiDeclarationVo getApi() {
+        return api;
+    }
+
+    public void setApi(ApiDeclarationVo api) {
+        this.api = api;
     }
 
     public String getDbConnName() {
@@ -169,14 +192,22 @@ public class ApiTestCaseVo implements Serializable{
         this.dbConnName = dbConnName;
     }
 
+    public TestCaseState getState() {
+        return state;
+    }
+
+    public void setState(TestCaseState state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
-        return "ApiTestCaseVo [id=" + id + ", generalCaseId=" + generalCaseId + ", priority="
-                + priority + ", apiId=" + apiId + ", apiName=" + apiName + ", name=" + name
-                + ", header=" + header + ", steps=" + steps + ", parameters=" + parameters
-                + ", expectedResult=" + expectedResult + ", resultCheckMode=" + resultCheckMode
-                + ", dbConnId=" + dbConnId + ", dbConnName=" + dbConnName + ", querySql=" + querySql
+        return "ApiTestCaseVo [id=" + id + ", appId=" + appId + ", generalCaseId=" + generalCaseId
+                + ", generalCaseName=" + generalCaseName + ", priority=" + priority + ", apiId="
+                + apiId + ", api=" + api + ", name=" + name + ", header=" + header + ", steps="
+                + steps + ", parameters=" + parameters + ", expectedResult=" + expectedResult
+                + ", resultCheckMode=" + resultCheckMode + ", dbConnId=" + dbConnId
+                + ", dbConnName=" + dbConnName + ", querySql=" + querySql + ", state=" + state
                 + "]";
     }
-    
 }

@@ -22,10 +22,16 @@ public class ApiDeclarationVo implements Serializable{
     private Long id;
     @JsonProperty("appId")
     private Long appId;
+    @JsonProperty("appName")
+    private String appName;
     @JsonProperty("moduleId")
     private Long moduleId;
+    @JsonProperty("moduleName")
+    private String moduleName;
     @JsonProperty("functionId")
     private Long functionId;
+    @JsonProperty("functionName")
+    private String functionName;
     @JsonProperty("name")
     private String name;
     @JsonProperty("url")
@@ -79,6 +85,30 @@ public class ApiDeclarationVo implements Serializable{
 
     public void setFunctionId(Long functionId) {
         this.functionId = functionId;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
     public String getName() {
@@ -139,11 +169,11 @@ public class ApiDeclarationVo implements Serializable{
 
     @Override
     public String toString() {
-        return "ApiDeclarationVo [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
-                + ", functionId=" + functionId + ", name=" + name + ", url=" + url + ", path="
-                + path + ", method=" + method + ", header=" + header + ", arguments=" + arguments
-                + ", response=" + response + "]";
+        return "ApiDeclarationVo [id=" + id + ", appId=" + appId + ", appName=" + appName
+                + ", moduleId=" + moduleId + ", moduleName=" + moduleName + ", functionId="
+                + functionId + ", functionName=" + functionName + ", name=" + name + ", url=" + url
+                + ", path=" + path + ", method=" + method + ", header=" + header + ", arguments="
+                + arguments + ", response=" + response + "]";
     }
-    
 }
 

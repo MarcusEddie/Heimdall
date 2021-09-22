@@ -24,6 +24,7 @@ public class ApiTestCase extends BaseEntity implements Serializable{
 
     @TableId(type = IdType.AUTO)
     private Long id;
+    private Long appId;
     private Long generalCaseId;
     private CasePriority priority;
     private Long apiId;
@@ -51,6 +52,14 @@ public class ApiTestCase extends BaseEntity implements Serializable{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Long appId) {
+        this.appId = appId;
     }
 
     public Long getGeneralCaseId() {
@@ -143,14 +152,10 @@ public class ApiTestCase extends BaseEntity implements Serializable{
 
     @Override
     public String toString() {
-        return "ApiTestCase [id=" + id + ", generalCaseId=" + generalCaseId + ", priority="
-                + priority + ", apiId=" + apiId + ", name=" + name + ", header=" + header
-                + ", steps=" + steps + ", parameters=" + parameters + ", expectedResult="
+        return "ApiTestCase [id=" + id + ", appId=" + appId + ", generalCaseId=" + generalCaseId
+                + ", priority=" + priority + ", apiId=" + apiId + ", name=" + name + ", header="
+                + header + ", steps=" + steps + ", parameters=" + parameters + ", expectedResult="
                 + expectedResult + ", resultCheckMode=" + resultCheckMode + ", dbConnId=" + dbConnId
-                + ", querySql=" + querySql + ", getCreateBy()=" + getCreateBy() + ", getEnabled()="
-                + getEnabled() + ", getDeleted()=" + getDeleted() + ", getCreateTime()="
-                + getCreateTime() + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
-                + getModifiedTime() + "]";
+                + ", querySql=" + querySql + "]";
     }
-    
 }

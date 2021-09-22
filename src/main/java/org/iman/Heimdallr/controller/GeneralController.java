@@ -27,20 +27,20 @@ public class GeneralController {
     public Response<List<HttpMethod>> getHttpMethods() {
         Response<List<HttpMethod>> resp = new Response<List<HttpMethod>>();
         resp.setData(new ArrayList<HttpMethod>(Arrays.asList(HttpMethod.values())));
-        return resp.mkTime();
+        return resp;
     }
     
     @GetMapping("getCasePriority")
     public Response<List<CasePriority>> getCasePriority() {
         Response<List<CasePriority>> resp = new Response<List<CasePriority>>();
         resp.setData(new ArrayList<CasePriority>(Arrays.asList(CasePriority.values())));
-        return resp.mkTime();
+        return resp;
     }
     
     @GetMapping("getCaseCheckMode")
     public Response<List<ResultCheckMode>> getCaseCheckMethod() {
         Response<List<ResultCheckMode>> resp = new Response<List<ResultCheckMode>>();
         resp.setData(new ArrayList<ResultCheckMode>(Arrays.asList(ResultCheckMode.values())));
-        return resp.mkTime();
+        return resp;
     }
 }

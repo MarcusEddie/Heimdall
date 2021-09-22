@@ -54,7 +54,6 @@ public class ResponseAdvice<T> implements ResponseBodyAdvice<Object> {
 
         String port = env.getProperty("local.server.port");
         String host = "";
-        System.out.println(request.getURI());
         try {
             host = Inet4Address.getLocalHost().getHostAddress();
         } catch (UnknownHostException e1) {
