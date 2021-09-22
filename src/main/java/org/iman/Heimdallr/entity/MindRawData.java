@@ -13,8 +13,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author ey
  *
  */
-@TableName("mindData")
-public class MindData extends BaseEntity implements Serializable{
+@TableName("mindRawData")
+public class MindRawData extends BaseEntity implements Serializable{
 
     private static final long serialVersionUID = -6150632610495290935L;
 
@@ -27,20 +27,20 @@ public class MindData extends BaseEntity implements Serializable{
     
     private Long functionId; 
     
-    private String mapData;
+    private String rawData;
 
-    public MindData() {
+    public MindRawData() {
         super();
     }
 
-    public MindData(Long id) {
+    public MindRawData(Long id) {
         super();
         this.id = id;
     }
 
-    public MindData(String mapData) {
+    public MindRawData(String rawData) {
         super();
-        this.mapData = mapData;
+        this.rawData = rawData;
     }
 
     public Long getId() {
@@ -75,18 +75,18 @@ public class MindData extends BaseEntity implements Serializable{
         this.functionId = functionId;
     }
 
-    public String getMapData() {
-        return mapData;
+    public String getRawData() {
+        return rawData;
     }
 
-    public void setMapData(String mapData) {
-        this.mapData = mapData;
+    public void setRawData(String rawData) {
+        this.rawData = rawData;
     }
 
     @Override
     public String toString() {
         return "MindData [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
-                + ", functionId=" + functionId + ", mapData=" + mapData + ", getCreateBy()="
+                + ", functionId=" + functionId + ", rawData=" + rawData + ", getCreateBy()="
                 + getCreateBy() + ", getEnabled()=" + getEnabled() + ", getDeleted()="
                 + getDeleted() + ", getCreateTime()=" + getCreateTime() + ", getModifiedBy()="
                 + getModifiedBy() + ", getModifiedTime()=" + getModifiedTime() + "]";

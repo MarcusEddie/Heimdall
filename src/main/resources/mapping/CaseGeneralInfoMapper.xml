@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.CaseGeneralInfoMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.TestCase" resultType="org.iman.Heimdallr.entity.TestCase">
+        select cgi.id, cgi.appId, cgi.moduleId, cgi.functionId, cgi.name, cgi.description, cgi.step, cgi.results, cgi.rawDataId, cgi.enabled, cgi.deleted, cgi.createBy, cgi.createTime, cgi.modifiedBy, cgi.modifiedTime
+        from  caseGeneralInfo cgi
+        where 1 = 1
+        <if test = 'id != null'> and cgi.id = #{id} </if>
+        <if test = 'appId != null'> and cgi.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and cgi.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and cgi.functionId = #{functionId} </if>
+        <if test = 'rawDataId != null'> and cgi.rawDataId = #{rawDataId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and cgi.name like concat('%', #{name}, '%')</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and cgi.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and cgi.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and cgi.deleted = 1 </when> 
+            <otherwise>and cgi.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TestCase" resultType="org.iman.Heimdallr.entity.TestCase">
+        select cgi.id, cgi.appId, cgi.moduleId, cgi.functionId, cgi.name, cgi.description, cgi.step, cgi.results, cgi.rawDataId, cgi.enabled, cgi.deleted, cgi.createBy, cgi.createTime, cgi.modifiedBy, cgi.modifiedTime
+        from  caseGeneralInfo cgi
+        where 1 = 1
+        <if test = 'testCase.id != null'> and cgi.id = #{testCase.id} </if>
+        <if test = 'testCase.appId != null'> and cgi.appId = #{testCase.appId} </if>
+        <if test = 'testCase.moduleId != null'> and cgi.moduleId = #{testCase.moduleId} </if>
+        <if test = 'testCase.functionId != null'> and cgi.functionId = #{testCase.functionId} </if>
+        <if test = 'testCase.rawDataId != null'> and cgi.rawDataId = #{testCase.rawDataId} </if>
+        <if test = 'testCase.name != null and testCase.name.trim() != &quot;&quot;'> and cgi.name like concat('%', #{testCase.name}, '%')</if>
+        <choose>
+            <when test = 'testCase.enabled != null and testCase.enabled == false'> and cgi.enabled = 0 </when>
+            <when test = 'testCase.enabled != null and testCase.enabled == true'> and cgi.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'testCase.deleted != null and testCase.deleted == true'> and cgi.deleted = 1 </when> 
+            <otherwise>and cgi.deleted = 0 </otherwise>
+        </choose>
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.TestCase" resultType="java.lang.Integer">
+        select count(cgi.id)
+        from  caseGeneralInfo cgi
+        where 1 = 1
+        <if test = 'id != null'> and cgi.id = #{id} </if>
+        <if test = 'appId != null'> and cgi.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and cgi.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and cgi.functionId = #{functionId} </if>
+        <if test = 'rawDataId != null'> and cgi.rawDataId = #{rawDataId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and cgi.name like concat('%', #{name}, '%')</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and cgi.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and cgi.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and cgi.deleted = 1 </when> 
+            <otherwise>and cgi.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.TestCase">
+        update caseGeneralInfo
+        set deleted = 1
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+        <if test = 'rawDataId != null'> and rawDataId = #{rawDataId} </if>
+    </update>
+    
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.TestCase">
+        update caseGeneralInfo
+        set enabled = #{enabled}
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+        <if test = 'rawDataId != null'> and rawDataId = #{rawDataId} </if>
+    </update>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.TestCase">
+		update caseGeneralInfo
+		<trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+			<if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+			<if test='description != null and description.trim() != &quot;&quot;'> description = #{description}, </if>
+			<if test='step != null and step.trim() != &quot;&quot;'> step = #{step}, </if>
+			<if test='results != null and results.trim() != &quot;&quot;'> results = #{results}, </if>
+			<if test='rawDataId != null'> rawDataId = #{rawDataId}, </if>
+		</trim>
+	</update>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.ApiDeclarationMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.ApiDeclaration" resultType="org.iman.Heimdallr.entity.ApiDeclaration">
+        select ad.id, ad.appId, ad.moduleId, ad.functionId, ad.name, ad.url, ad.path, ad.method, ad.header, ad.arguments, ad.response, ad.enabled, ad.deleted, ad.createBy, ad.createTime, ad.modifiedBy, ad.modifiedTime
+        from  apiDeclaration ad
+        where 1 = 1
+        <if test = 'id != null'> and ad.id = #{id} </if>
+        <if test = 'appId != null'> and ad.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and ad.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and ad.functionId = #{functionId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and ad.name like concat('%', #{name}, '%')</if>
+        <if test = 'url != null and url.trim() != &quot;&quot;'> and ad.url = #{url}</if>
+        <if test = 'path != null and path.trim() != &quot;&quot;'> and ad.path = #{path}</if>
+        <if test = 'method != null'> and ad.method = #{method}</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and ad.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and ad.deleted = 1 </when> 
+            <otherwise>and ad.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.ApiDeclaration" resultType="org.iman.Heimdallr.entity.ApiDeclaration">
+        select ad.id, ad.appId, ad.moduleId, ad.functionId, ad.name, ad.url, ad.path, ad.method, ad.header, ad.arguments, ad.response, ad.enabled, ad.deleted, ad.createBy, ad.createTime, ad.modifiedBy, ad.modifiedTime
+        from  apiDeclaration ad
+        where 1 = 1
+        <if test = 'id != null'> and ad.id = #{id} </if>
+        <if test = 'appId != null'> and ad.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and ad.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and ad.functionId = #{functionId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and ad.name like concat('%', #{name}, '%')</if>
+        <if test = 'url != null and url.trim() != &quot;&quot;'> and ad.url = #{url}</if>
+        <if test = 'path != null and path.trim() != &quot;&quot;'> and ad.path = #{path}</if>
+        <if test = 'method != null'> and ad.method = #{method}</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and ad.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and ad.deleted = 1 </when> 
+            <otherwise>and ad.deleted = 0 </otherwise>
+        </choose>
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.ApiDeclaration" resultType="java.lang.Integer">
+        select count(ad.id)
+        from  apiDeclaration ad
+        where 1 = 1
+        <if test = 'id != null'> and ad.id = #{id} </if>
+        <if test = 'appId != null'> and ad.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and ad.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and ad.functionId = #{functionId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and ad.name like concat('%', #{name}, '%')</if>
+        <if test = 'url != null and url.trim() != &quot;&quot;'> and ad.url = #{url}</if>
+        <if test = 'path != null and path.trim() != &quot;&quot;'> and ad.path = #{path}</if>
+        <if test = 'method != null'> and ad.method = #{method}</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and ad.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and ad.deleted = 1 </when> 
+            <otherwise>and ad.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.ApiDeclaration">
+        update apiDeclaration
+        set deleted = 1
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+    </update>
+    
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.ApiDeclaration">
+        update apiDeclaration
+        set enabled = #{enabled}
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+    </update>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.ApiDeclaration">
+        update apiDeclaration
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+        </trim>
+    </update>
+</mapper>

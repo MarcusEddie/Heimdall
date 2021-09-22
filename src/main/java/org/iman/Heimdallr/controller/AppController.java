@@ -3,7 +3,6 @@
  */
 package org.iman.Heimdallr.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,18 +11,19 @@ import java.util.Optional;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.iman.Heimdallr.constants.Parameters;
 import org.iman.Heimdallr.constants.enums.AppLevel;
 import org.iman.Heimdallr.constants.enums.ErrorCode;
-import org.iman.Heimdallr.constants.Parameters;
 import org.iman.Heimdallr.entity.App;
 import org.iman.Heimdallr.entity.AppStructure;
+import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.service.AppStructureService;
 import org.iman.Heimdallr.utils.BeanUtils;
 import org.iman.Heimdallr.utils.ControllerUtils;
+import org.iman.Heimdallr.vo.AppVo;
 import org.iman.Heimdallr.vo.FunctionVo;
 import org.iman.Heimdallr.vo.ModuleVo;
 import org.iman.Heimdallr.vo.Response;
-import org.iman.Heimdallr.vo.AppVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -143,12 +143,11 @@ public class AppController {
         Optional<AppStructure> function = appStructureService.getById(functionId);
         if (function.isPresent()) {
             try {
-                FunctionVo vo = BeanUtils.copy(function.get(), FunctionVo.class);
-                resp.setData(vo);
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                    | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                Optional<FunctionVo> vo = BeanUtils.copy(function.get(), FunctionVo.class);
+                resp.setData(vo.isPresent() ? vo.get() : null);
+            } catch (DataConversionException e) {
                 if (log.isErrorEnabled()) {
-                    log.error("Convert FunctionVo from Function failed", e);
+                    log.error(e.getMessage());
                 }
                 resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
             }
@@ -166,16 +165,13 @@ public class AppController {
                 req.get(Parameters.FUNCTION_NAME).asText());
 
         try {
-            AppVo rs = BeanUtils.copy(app, AppVo.class);
-            resp.setData(rs);
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            Optional<AppVo> rs = BeanUtils.copy(app, AppVo.class);
+            resp.setData(rs.isPresent() ? rs.get() : null);
+        } catch (DataConversionException e) {
             if (log.isErrorEnabled()) {
-                log.error("Convert result from App to AppVo failed because of exception", e);
+                log.error(e.getMessage());
             }
-            resp.setSuccess(false);
-            resp.setErrorCode(ErrorCode.DATA_CONVERSION_FAILURE.getCode());
-            resp.setErrorMsg(ErrorCode.DATA_CONVERSION_FAILURE.getMsg());
+            resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
         }
 
         return resp.mkTime();

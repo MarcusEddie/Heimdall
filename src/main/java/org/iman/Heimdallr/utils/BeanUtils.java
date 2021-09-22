@@ -4,7 +4,9 @@
 package org.iman.Heimdallr.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 
+import org.iman.Heimdallr.exception.DataConversionException;
 import org.springframework.cglib.beans.BeanCopier;
 
 /**
@@ -13,16 +15,26 @@ import org.springframework.cglib.beans.BeanCopier;
  */
 public class BeanUtils {
 
-    public static <E, T> T copy(E source, Class<T> targetClass)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-            InvocationTargetException, NoSuchMethodException, SecurityException {
+    public static <E, T> Optional<T> copy(E source, Class<T> targetClass)
+            throws DataConversionException {
         if (null == source) {
-            return null;
+            return Optional.empty();
         }
-        
-        T target = targetClass.getDeclaredConstructor().newInstance();
+
+        T target;
+        try {
+            target = targetClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            String err = "Convert from " + source.getClass().getSimpleName() + "to "
+                    + targetClass.getSimpleName() + " failed";
+            throw new DataConversionException(err, e);
+
+        }
         BeanCopier copier = BeanCopier.create(source.getClass(), targetClass, false);
         copier.copy(source, target, null);
-        return target;
+
+        return Optional.ofNullable(target);
     }
+
 }

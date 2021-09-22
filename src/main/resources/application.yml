@@ -5,6 +5,7 @@ mybatis-plus:
   global-config:
     db-column-underline: false
   mapper-locations: classpath:/mapping/*.xml
+  type-handlers-package: org.iman.Heimdallr.config.handler
 
 spring:
   datasource:

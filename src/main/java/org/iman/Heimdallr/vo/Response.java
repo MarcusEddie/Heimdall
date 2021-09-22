@@ -17,6 +17,12 @@ public class Response<T> implements Serializable {
 
     private Boolean success;
     private T data;
+    private Integer current;
+    
+    private Integer pageSize;
+    
+    private Integer total;
+    
     private Integer errorCode;
     private String errorMsg;
     private String traceId;
@@ -95,6 +101,31 @@ public class Response<T> implements Serializable {
     public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
+    
+    public Integer getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(Integer current) {
+        this.current = current;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer getTotal() {
+        return total;
+    }
+
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
+    
 
     public Response<T> mkTime(){
         setTimeStamp(LocalDateTime.now(ZoneOffset.UTC));

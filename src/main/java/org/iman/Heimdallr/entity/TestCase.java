@@ -14,26 +14,34 @@ import com.baomidou.mybatisplus.annotation.TableName;
  *
  */
 @TableName("caseGeneralInfo")
-public class TestCase extends BaseEntity implements Serializable{
+public class TestCase extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -6977750650710351943L;
 
     @TableId(type = IdType.AUTO)
     private Long id;
-    
+
     private Long appId;
-    
+
+    private String appName;
+
     private Long moduleId;
-    
+
+    private String moduleName;
+
     private Long functionId;
-    
+
+    private String functionName;
+
     private String name;
-    
+
     private String description;
-    
+
     private String step;
-    
+
     private String results;
+
+    private Long rawDataId;
 
     public TestCase() {
         super();
@@ -54,6 +62,30 @@ public class TestCase extends BaseEntity implements Serializable{
 
     public Long getAppId() {
         return appId;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
     public void setAppId(Long appId) {
@@ -108,10 +140,21 @@ public class TestCase extends BaseEntity implements Serializable{
         this.results = results;
     }
 
+    public Long getRawDataId() {
+        return rawDataId;
+    }
+
+    public void setRawDataId(Long rawDataId) {
+        this.rawDataId = rawDataId;
+    }
+
     @Override
     public String toString() {
-        return "TestCase [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
-                + ", functionId=" + functionId + ", name=" + name + ", description=" + description
-                + ", step=" + step + ", results=" + results + "]";
+        return "TestCase [id=" + id + ", appId=" + appId + ", appName=" + appName + ", moduleId="
+                + moduleId + ", moduleName=" + moduleName + ", functionId=" + functionId
+                + ", functionName=" + functionName + ", name=" + name + ", description="
+                + description + ", step=" + step + ", results=" + results + ", rawDataId="
+                + rawDataId + "]";
     }
+
 }

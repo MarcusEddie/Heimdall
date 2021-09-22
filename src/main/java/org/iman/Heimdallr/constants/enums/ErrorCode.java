@@ -13,6 +13,7 @@ public enum ErrorCode {
     DATA_CONVERSION_FAILURE("Data Conversion Failure", 510),
     PARAMETERS_ARE_INVALID("Parameters are Invalid", 400),
     REQUIRED_DATA_NOT_AVAILABLE("Required Data Not Available", 4001),
+    PARAMETERS_PARSING_FAILED("Parameters parsing failed", 4002),
     DATA_IS_DELETED("Data is Deleted", 410);
     
     private String msg;

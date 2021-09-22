@@ -21,8 +21,10 @@ public interface AppStructureMapper extends BaseMapper<AppStructure> {
 
     public int insert(AppStructure obj);
 
-    public List<AppStructure> selectBy(AppStructure query);
+    public List<AppStructure> selectBy(AppStructure criteria);
 
     public int deleteBy(AppStructure criteria);
+    
+    public int disableBy(AppStructure criteria);
     
 }

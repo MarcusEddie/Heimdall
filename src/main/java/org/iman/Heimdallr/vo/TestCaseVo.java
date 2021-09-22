@@ -5,6 +5,8 @@ package org.iman.Heimdallr.vo;
 
 import java.io.Serializable;
 
+import org.iman.Heimdallr.constants.enums.TestCaseState;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -21,11 +23,20 @@ public class TestCaseVo implements Serializable{
     @JsonProperty("appId")
     private Long appId;
     
+    @JsonProperty("appName")
+    private String appName;
+
     @JsonProperty("moduleId")
     private Long moduleId;
     
+    @JsonProperty("moduleName")
+    private String moduleName;
+    
     @JsonProperty("functionId")
     private Long functionId;
+    
+    @JsonProperty("functionName")
+    private String functionName;
     
     @JsonProperty("name")
     private String name;
@@ -39,6 +50,12 @@ public class TestCaseVo implements Serializable{
     @JsonProperty("results")
     private String results;
 
+    @JsonProperty("rawDataId")
+    private Long rawDataId;
+    
+    @JsonProperty("state")
+    private TestCaseState state ;
+    
     public TestCaseVo() {
         super();
     }
@@ -63,12 +80,28 @@ public class TestCaseVo implements Serializable{
         this.appId = appId;
     }
 
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     public Long getModuleId() {
         return moduleId;
     }
 
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
     }
 
     public Long getFunctionId() {
@@ -79,20 +112,20 @@ public class TestCaseVo implements Serializable{
         this.functionId = functionId;
     }
 
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getStep() {
-        return step;
-    }
-
-    public void setStep(String step) {
-        this.step = step;
     }
 
     public String getDescription() {
@@ -103,6 +136,14 @@ public class TestCaseVo implements Serializable{
         this.description = description;
     }
 
+    public String getStep() {
+        return step;
+    }
+
+    public void setStep(String step) {
+        this.step = step;
+    }
+
     public String getResults() {
         return results;
     }
@@ -111,10 +152,29 @@ public class TestCaseVo implements Serializable{
         this.results = results;
     }
 
+    public Long getRawDataId() {
+        return rawDataId;
+    }
+
+    public void setRawDataId(Long rawDataId) {
+        this.rawDataId = rawDataId;
+    }
+
+    public TestCaseState getState() {
+        return state;
+    }
+
+    public void setState(TestCaseState state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
-        return "TestCaseVo [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
-                + ", functionId=" + functionId + ", name=" + name + ", step=" + step
-                + ", description=" + description + ", results=" + results + "]";
+        return "TestCaseVo [id=" + id + ", appId=" + appId + ", appName=" + appName + ", moduleId="
+                + moduleId + ", moduleName=" + moduleName + ", functionId=" + functionId
+                + ", functionName=" + functionName + ", name=" + name + ", description="
+                + description + ", step=" + step + ", results=" + results + ", rawDataId="
+                + rawDataId + ", state=" + state + "]";
     }
+
 }

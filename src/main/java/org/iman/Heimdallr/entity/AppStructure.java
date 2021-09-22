@@ -4,9 +4,6 @@
 package org.iman.Heimdallr.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import org.iman.Heimdallr.constants.Consts;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -32,18 +29,11 @@ public class AppStructure extends BaseEntity implements Serializable, Comparable
 
     public AppStructure() {
         super();
-        setCreateBy(Consts.SYSTEM_ADMIN);
-        setCreateTime(LocalDateTime.now());
-        setEnabled(true);
-        setDeleted(false);
     }
 
     public AppStructure(Long id) {
+        super();
         this.id = id;
-        setCreateBy(Consts.SYSTEM_ADMIN);
-        setCreateTime(LocalDateTime.now());
-        setEnabled(true);
-        setDeleted(false);
     }
 
     public Long getId() {
@@ -79,6 +69,11 @@ public class AppStructure extends BaseEntity implements Serializable, Comparable
     }
 
     @Override
+    public int compareTo(AppStructure o) {
+        return this.getName().compareTo(o.getName());
+    }
+
+    @Override
     public String toString() {
         return "AppStructure [id=" + id + ", name=" + name + ", level=" + level + ", root=" + root
                 + ", getCreateBy()=" + getCreateBy() + ", getEnabled()=" + getEnabled()
@@ -87,8 +82,4 @@ public class AppStructure extends BaseEntity implements Serializable, Comparable
                 + "]";
     }
 
-    @Override
-    public int compareTo(AppStructure o) {
-        return this.getName().compareTo(o.getName());
-    }
 }
