@@ -96,7 +96,6 @@
         set deleted = 1
         where 1= 1
         <if test = 'id != null'> and id = #{id} </if>
-        <if test = 'appId != null'> and appId = #{appId} </if>
     </update>
     
     <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.ApiTestCase">
@@ -104,17 +103,42 @@
         set enabled = #{enabled}
         where 1= 1
         <if test = 'id != null'> and id = #{id} </if>
-        <if test = 'appId != null'> and appId = #{appId} </if>
     </update>
     
     <update id="updateById" parameterType="org.iman.Heimdallr.entity.ApiTestCase">
         update apiTestCaseDetails
         <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
             <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
-            <if test='description != null and description.trim() != &quot;&quot;'> description = #{description}, </if>
-            <if test='step != null and step.trim() != &quot;&quot;'> step = #{step}, </if>
-            <if test='results != null and results.trim() != &quot;&quot;'> results = #{results}, </if>
-            <if test='rawDataId != null'> rawDataId = #{rawDataId}, </if>
+            <if test='appId != null'> appId = #{appId}, </if>
+            <if test='generalCaseId != null'> generalCaseId = #{generalCaseId}, </if>
+            <if test='priority != null'> priority = #{priority}, </if>
+            <if test='apiId != null'> appId = #{apiId}, </if>
+            <if test='header != null '> header = #{header}, </if>
+            <if test='steps != null and steps.trim() != &quot;&quot;'> steps = #{steps}, </if>
+            <if test='parameters != null'> parameters = #{parameters}, </if>
+            <if test='querySql != null and querySql.trim() != &quot;&quot;'> querySql = #{querySql}, </if>
+            <if test='expectedResult != null'> expectedResult = #{expectedResult}, </if>
+            <if test='resultCheckMode != null'> resultCheckMode = #{resultCheckMode}, </if>
+            <if test='dbConnId != null'> dbConnId = #{dbConnId}, </if>
         </trim>
     </update>
+    
+    <update id="clearResultById" parameterType="org.iman.Heimdallr.entity.ApiTestCase">
+        update apiTestCaseDetails
+        set expectedResult = null 
+        where id = #{id}
+    </update>
+    
+    <update id="clearDBInfoById" parameterType="org.iman.Heimdallr.entity.ApiTestCase">
+        update apiTestCaseDetails
+        set dbConnId = null, querySql = null
+        where id = #{id}
+    </update>
+    
+    <update id="clearHeadersById" parameterType="org.iman.Heimdallr.entity.ApiTestCase">
+        update apiTestCaseDetails
+        set header = '{}'
+        where id = #{id}
+    </update>
+    
 </mapper>

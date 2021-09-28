@@ -10,11 +10,11 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.iman.Heimdallr.constants.Consts;
+import org.iman.Heimdallr.constants.enums.ResultCheckMode;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.entity.ApiDeclaration;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.Page;
-import org.iman.Heimdallr.entity.TestCase;
 import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.mapper.ApiTestCaseDetailsMapper;
 import org.iman.Heimdallr.service.APIService;
@@ -24,11 +24,11 @@ import org.iman.Heimdallr.utils.BeanUtils;
 import org.iman.Heimdallr.vo.ApiDeclarationVo;
 import org.iman.Heimdallr.vo.ApiTestCaseVo;
 import org.iman.Heimdallr.vo.Pagination;
-import org.iman.Heimdallr.vo.TestCaseVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author ey
@@ -89,6 +89,112 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
         rs.setTotal(cnt);
 
         return rs;
+    }
+    
+    @Override
+    @Transactional
+    public ApiTestCase update(ApiTestCaseVo vo) throws DataConversionException {
+        Optional.ofNullable(vo).orElseThrow(() -> {
+            throw new IllegalArgumentException("ApiTestCaseVo is required");
+        });
+
+        ApiTestCase testCase = BeanUtils.copy(vo, ApiTestCase.class).get();
+        apiTestCaseDetailsMapper.updateById(testCase);
+        
+        if (ResultCheckMode.RESPONSE_DATA.equals(testCase.getResultCheckMode())) {
+            apiTestCaseDetailsMapper.clearDBInfoById(testCase);
+        } else {
+            apiTestCaseDetailsMapper.clearResultById(testCase);
+        }
+        if (null != testCase.getHeader() && (null != testCase.getHeader().get("headers") && testCase.getHeader().get("headers").isEmpty()) ) {
+            apiTestCaseDetailsMapper.clearHeadersById(testCase);
+        }
+        
+        return testCase;
+    }
+
+    @Override
+    public Optional<ApiTestCase> delete(ApiTestCaseVo vo) throws DataConversionException {
+        Optional.ofNullable(vo).orElseThrow(() -> {
+            throw new IllegalArgumentException("ApiTestCaseVo is required");
+        });
+        
+        ApiTestCase testCase = BeanUtils.copy(vo, ApiTestCase.class).get();
+        apiTestCaseDetailsMapper.deleteBy(testCase);
+        
+        return Optional.of(testCase);
+    }
+    
+    @Override
+    @Transactional
+    public Integer delete(List<ApiTestCaseVo> vos) throws DataConversionException {
+        if (CollectionUtils.sizeIsEmpty(vos)) {
+            return 0;
+        }
+        
+        Iterator<ApiTestCaseVo> it = vos.iterator();
+        while (it.hasNext()) {
+            ApiTestCaseVo vo = (ApiTestCaseVo) it.next();
+            delete(vo);
+        }
+        
+        return vos.size();
+    }
+
+    @Override
+    public Optional<ApiTestCase> activate(ApiTestCaseVo vo) throws DataConversionException {
+        Optional.ofNullable(vo).orElseThrow(() -> {
+            throw new IllegalArgumentException("ApiTestCaseVo is required");
+        });
+        
+        ApiTestCase testCase = BeanUtils.copy(vo, ApiTestCase.class).get();
+        testCase.setEnabled(true);
+        apiTestCaseDetailsMapper.stateSwitch(testCase);
+        
+        return Optional.of(testCase);
+    }
+
+    @Override
+    public Integer activate(List<ApiTestCaseVo> vos) throws DataConversionException {
+        if (CollectionUtils.sizeIsEmpty(vos)) {
+            return 0;
+        }
+        
+        Iterator<ApiTestCaseVo> it = vos.iterator();
+        while (it.hasNext()) {
+            ApiTestCaseVo vo = (ApiTestCaseVo) it.next();
+            activate(vo);
+        }
+        
+        return vos.size();
+    }
+
+    @Override
+    public Optional<ApiTestCase> deactivate(ApiTestCaseVo vo) throws DataConversionException {
+        Optional.ofNullable(vo).orElseThrow(() -> {
+            throw new IllegalArgumentException("ApiTestCaseVo is required");
+        });
+        
+        ApiTestCase testCase = BeanUtils.copy(vo, ApiTestCase.class).get();
+        testCase.setEnabled(false);
+        apiTestCaseDetailsMapper.stateSwitch(testCase);
+        
+        return Optional.of(testCase);
+    }
+    
+    @Override
+    public Integer deactivate(List<ApiTestCaseVo> vos) throws DataConversionException {
+        if (CollectionUtils.sizeIsEmpty(vos)) {
+            return 0;
+        }
+        
+        Iterator<ApiTestCaseVo> it = vos.iterator();
+        while (it.hasNext()) {
+            ApiTestCaseVo vo = (ApiTestCaseVo) it.next();
+            deactivate(vo);
+        }
+        
+        return vos.size();
     }
     
     private List<Long> getGeneralCaseId(ApiDeclarationVo api, Long appId) throws DataConversionException {

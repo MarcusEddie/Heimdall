@@ -140,6 +140,7 @@ public class TestCaseController {
     public Response<List<TestCaseVo>> getTestCasesByParams(@JsonParam TestCaseVo params,
             @JsonParam PageInfo pageInfo) {
         Response<List<TestCaseVo>> resp = new Response<List<TestCaseVo>>();
+        System.out.println("getTestCasesByParams: " + params.toString());
 
         try {
             Pagination<TestCase> rs = caseGeneralInfoService.getByParams(params, pageInfo.toPage());

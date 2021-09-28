@@ -37,5 +37,11 @@ public interface ApiTestCaseDetailsMapper extends BaseMapper<ApiTestCase> {
     public int stateSwitch(ApiTestCase criteria);
 
     public int updateById(ApiTestCase testCase);
+    
+    public int clearResultById(ApiTestCase testCase);
+    
+    public int clearDBInfoById(ApiTestCase testCase);
+    
+    public int clearHeadersById(ApiTestCase testCase);
 
 }
