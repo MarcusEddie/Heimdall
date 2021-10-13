@@ -43,8 +43,6 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
     private ApiTestCaseDetailsMapper apiTestCaseDetailsMapper;
     @Autowired
     private APIService apiService;
-    @Autowired
-    private CaseGeneralInfoService caseGeneralInfoService;
 
     @Override
     public ApiTestCase save(ApiTestCaseVo vo) throws DataConversionException {

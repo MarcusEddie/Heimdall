@@ -24,4 +24,18 @@ public interface APIService {
     
     public Pagination<ApiDeclaration> getByParams(ApiDeclarationVo criteria, Page page) throws DataConversionException;
     public Optional<ApiDeclaration> getById(Long id);
+    
+    public Optional<ApiDeclaration> delete(ApiDeclarationVo vo) throws DataConversionException;
+    
+    public Integer delete(List<ApiDeclarationVo> vos) throws DataConversionException;
+    
+    public Optional<ApiDeclaration> activate(ApiDeclarationVo vo) throws DataConversionException;
+    
+    public Integer activate(List<ApiDeclarationVo> vos) throws DataConversionException;
+    
+    public Optional<ApiDeclaration> deactivate(ApiDeclarationVo vo) throws DataConversionException;
+    
+    public Integer deactivate(List<ApiDeclarationVo> vos) throws DataConversionException;
+    
+    public Optional<ApiDeclaration> updateById(ApiDeclarationVo vo) throws DataConversionException;
 }

@@ -75,15 +75,15 @@ public class AppController {
         Long id = req.get(Parameters.ID).asLong();
         Optional<AppStructure> rs = appStructureService.getById(id);
         if (rs.isEmpty()) {
-            resp.setSuccess(false);
             resp.setErrorCode(ErrorCode.DATA_IS_DELETED.getCode());
             resp.setErrorMsg(ErrorCode.DATA_IS_DELETED.getMsg());
+            return resp;
         }
 
         AppVo vo = new AppVo(rs.get().getId());
         vo.setName(rs.get().getName());
         resp.setData(vo);
-        return resp.mkTime();
+        return resp;
     }
 
     @PostMapping("/getModuleOptions")
@@ -110,6 +110,23 @@ public class AppController {
         resp.setData(rs);
 
         return resp.mkTime();
+    }
+    
+    @PostMapping("getModuleById")
+    public Response<ModuleVo> getModuleById(@RequestBody ModuleVo req) {
+        Response<ModuleVo> resp = new Response<ModuleVo>();
+        System.out.println("GET MODULE BY ID:" + req.toString());
+        try {
+            Optional<AppStructure> struc = appStructureService.getById(req.getId());
+            if (struc.isPresent()) {
+                Optional<ModuleVo> cpObj = BeanUtils.copy(struc.get(), ModuleVo.class);
+                resp.setData(cpObj.get());
+            }
+        } catch (DataConversionException e) {
+            resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
+        }
+
+        return resp;
     }
 
     @PostMapping("/getFuncOptions")

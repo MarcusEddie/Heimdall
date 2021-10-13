@@ -95,7 +95,17 @@
     <update id="updateById" parameterType="org.iman.Heimdallr.entity.ApiDeclaration">
         update apiDeclaration
         <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test = 'appId != null'> appId = #{appId}, </if>
+	        <if test = 'moduleId != null'> moduleId = #{moduleId}, </if>
+	        <if test = 'functionId != null'> functionId = #{functionId}, </if>
             <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+	        <if test = 'url != null and url.trim() != &quot;&quot;'> url = #{url}, </if>
+	        <if test = 'path != null and path.trim() != &quot;&quot;'> path = #{path}, </if>
+	        <if test = 'method != null'> method = #{method}, </if>
+            <if test = 'header != null'> header = #{header}, </if>
+            <if test = 'arguments != null'> arguments = #{arguments}, </if>
+            <if test = 'response != null'> response = #{response}, </if>
+            <if test = 'modifiedBy != null and modifiedBy.trim() != &quot;&quot;'>  modifiedBy = #{modifiedBy}, </if>
         </trim>
     </update>
 </mapper>

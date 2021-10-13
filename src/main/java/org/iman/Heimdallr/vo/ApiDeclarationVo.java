@@ -6,6 +6,7 @@ package org.iman.Heimdallr.vo;
 import java.io.Serializable;
 
 import org.iman.Heimdallr.constants.enums.HttpMethod;
+import org.iman.Heimdallr.constants.enums.TestCaseState;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,6 +47,8 @@ public class ApiDeclarationVo implements Serializable{
     private JsonNode arguments;
     @JsonProperty("response")
     private JsonNode response;
+    @JsonProperty("state")
+    private TestCaseState state;
     
     public ApiDeclarationVo() {
         super();
@@ -167,13 +170,21 @@ public class ApiDeclarationVo implements Serializable{
         this.response = response;
     }
 
+    public TestCaseState getState() {
+        return state;
+    }
+
+    public void setState(TestCaseState state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         return "ApiDeclarationVo [id=" + id + ", appId=" + appId + ", appName=" + appName
                 + ", moduleId=" + moduleId + ", moduleName=" + moduleName + ", functionId="
                 + functionId + ", functionName=" + functionName + ", name=" + name + ", url=" + url
                 + ", path=" + path + ", method=" + method + ", header=" + header + ", arguments="
-                + arguments + ", response=" + response + "]";
+                + arguments + ", response=" + response + ", state=" + state + "]";
     }
 }
 
