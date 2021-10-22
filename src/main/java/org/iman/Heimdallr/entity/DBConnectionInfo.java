@@ -5,6 +5,8 @@ package org.iman.Heimdallr.entity;
 
 import java.io.Serializable;
 
+import org.iman.Heimdallr.constants.enums.DBType;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -25,6 +27,8 @@ public class DBConnectionInfo extends BaseEntity implements Serializable{
     private Long appId;
     
     private String name;
+    
+    private DBType dbType;
     
     private String url;
     
@@ -67,6 +71,14 @@ public class DBConnectionInfo extends BaseEntity implements Serializable{
         this.name = name;
     }
 
+    public DBType getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(DBType dbType) {
+        this.dbType = dbType;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -101,12 +113,12 @@ public class DBConnectionInfo extends BaseEntity implements Serializable{
 
     @Override
     public String toString() {
-        return "DBConnectionInfo [id=" + id + ", appId=" + appId + ", name=" + name + ", url=" + url
-                + ", userName=" + userName + ", password=" + password + ", header=" + header
-                + ", getCreateBy()=" + getCreateBy() + ", getEnabled()=" + getEnabled()
-                + ", getDeleted()=" + getDeleted() + ", getCreateTime()=" + getCreateTime()
-                + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
+        return "DBConnectionInfo [id=" + id + ", appId=" + appId + ", name=" + name + ", dbType="
+                + dbType + ", url=" + url + ", userName=" + userName + ", password=" + password
+                + ", header=" + header + ", getCreateBy()=" + getCreateBy() + ", getEnabled()="
+                + getEnabled() + ", getDeleted()=" + getDeleted() + ", getCreateTime()="
+                + getCreateTime() + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
                 + getModifiedTime() + "]";
     }
-    
+
 }

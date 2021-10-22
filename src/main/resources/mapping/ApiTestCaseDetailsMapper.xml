@@ -120,6 +120,7 @@
             <if test='expectedResult != null'> expectedResult = #{expectedResult}, </if>
             <if test='resultCheckMode != null'> resultCheckMode = #{resultCheckMode}, </if>
             <if test='dbConnId != null'> dbConnId = #{dbConnId}, </if>
+            <if test='modifiedBy != null and modifiedBy.trim() != &quot;&quot;'> modifiedBy = #{modifiedBy}, </if>
         </trim>
     </update>
     

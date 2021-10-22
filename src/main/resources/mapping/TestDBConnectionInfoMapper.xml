@@ -3,13 +3,14 @@
 <mapper namespace="org.iman.Heimdallr.mapper.TestDBConnectionInfoMapper">
     
     <select id="selectBy" parameterType="org.iman.Heimdallr.entity.DBConnectionInfo" resultType="org.iman.Heimdallr.entity.DBConnectionInfo">
-        select tci.id, tci.appId, tci.name, tci.url, tci.userName, tci.password, tci.header, tci.enabled, tci.deleted, tci.createBy, tci.createTime, tci.modifiedBy, tci.modifiedTime
+        select tci.id, tci.appId, tci.name, tci.url, tci.userName, tci.dbType, tci.header, tci.enabled, tci.deleted, tci.createBy, tci.createTime, tci.modifiedBy, tci.modifiedTime
         from  testDBConnectionInfo tci
         where 1 = 1
         <if test = 'id != null'> and tci.id = #{id} </if>
         <if test = 'appId != null'> and tci.appId = #{appId} </if>
         <if test = 'name != null and name.trim() != &quot;&quot;'> and tci.name like concat('%', #{name}, '%')</if>
         <if test = 'url != null and url.trim() != &quot;&quot;'> and tci.url = #{url}</if>
+        <if test = 'dbType != null'> and tci.dbType = #{dbType} </if>
         <if test = 'userName != null and userName.trim() != &quot;&quot;'> and tci.userName = #{userName}</if>
         <choose>
             <when test = 'enabled != null and enabled == false'> and tci.enabled = 0 </when>
@@ -23,26 +24,41 @@
     </select>
     
     <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.DBConnectionInfo" resultType="org.iman.Heimdallr.entity.DBConnectionInfo">
-        select tci.id, tci.appId, tci.name, tci.url, tci.userName, tci.password, tci.header, tci.enabled, tci.deleted, tci.createBy, tci.createTime, tci.modifiedBy, tci.modifiedTime
+        select tci.id, tci.appId, tci.name, tci.url, tci.userName, tci.dbType, tci.header, tci.enabled, tci.deleted, tci.createBy, tci.createTime, tci.modifiedBy, tci.modifiedTime
         from  testDBConnectionInfo tci
         where 1 = 1
-        <if test = 'connInfo.id != null'> and tci.id = #{connInfo.id} </if>
-        <if test = 'connInfo.appId != null'> and tci.appId = #{connInfo.appId} </if>
-        <if test = 'connInfo.name != null and connInfo.name.trim() != &quot;&quot;'> and tci.name like concat('%', #{connInfo.name}, '%')</if>
-        <if test = 'connInfo.url != null and connInfo.url.trim() != &quot;&quot;'> and tci.url = #{connInfo.url}</if>
-        <if test = 'connInfo.userName != null and connInfo.userName.trim() != &quot;&quot;'> and tci.userName = #{connInfo.userName}</if>
+        <if test = 'criteria.id != null'> and tci.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and tci.appId = #{criteria.appId} </if>
+        <if test = 'criteria.dbType != null'> and tci.dbType = #{criteria.dbType} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tci.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.url != null and criteria.url.trim() != &quot;&quot;'> and tci.url = #{criteria.url}</if>
+        <if test = 'criteria.userName != null and criteria.userName.trim() != &quot;&quot;'> and tci.userName = #{criteria.userName}</if>
         <choose>
-            <when test = 'connInfo.enabled != null and connInfo.enabled == false'> and tci.enabled = 0 </when>
-            <when test = 'connInfo.enabled != null and connInfo.enabled == true'> and tci.enabled = 1 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tci.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tci.enabled = 1 </when>
             <otherwise></otherwise>
         </choose>
         <choose>
-            <when test = 'connInfo.deleted != null and connInfo.deleted == true'> and tci.deleted = 1 </when> 
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tci.deleted = 1 </when> 
             <otherwise>and tci.deleted = 0 </otherwise>
         </choose>
         
         limit #{offset}, #{capacity}
     </select>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.DBConnectionInfo">
+        update testDBConnectionInfo
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test='appId != null'> appId = #{appId}, </if>
+            <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+            <if test='url != null and url.trim() != &quot;&quot;'> url = #{url}, </if>
+            <if test='userName != null and userName.trim() != &quot;&quot;'> userName = #{userName}, </if>
+            <if test='password != null and password.trim() != &quot;&quot;'> password = #{password}, </if>
+            <if test='dbType != null'> dbType = #{dbType}, </if>
+            <if test='header != null'> header = #{header}, </if>
+            <if test='modifiedBy != null and modifiedBy.trim() != &quot;&quot;'> modifiedBy = #{modifiedBy}, </if>
+        </trim>
+    </update>
     
     <select id="countByPage" parameterType="org.iman.Heimdallr.entity.DBConnectionInfo" resultType="java.lang.Integer">
         select count(tci.id)
@@ -50,6 +66,7 @@
         where 1 = 1
         <if test = 'id != null'> and tci.id = #{id} </if>
         <if test = 'appId != null'> and tci.appId = #{appId} </if>
+        <if test = 'dbType != null'> and tci.dbType = #{dbType} </if>
         <if test = 'name != null and name.trim() != &quot;&quot;'> and tci.name like concat('%', #{name}, '%')</if>
         <if test = 'url != null and url.trim() != &quot;&quot;'> and tci.url = #{url}</if>
         <if test = 'userName != null and userName.trim() != &quot;&quot;'> and tci.userName = #{userName}</if>
@@ -80,14 +97,4 @@
         <if test = 'appId != null'> and appId = #{appId} </if>
     </update>
     
-    <update id="updateById" parameterType="org.iman.Heimdallr.entity.DBConnectionInfo">
-        update testDBConnectionInfo
-        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
-            <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
-            <if test='description != null and description.trim() != &quot;&quot;'> description = #{description}, </if>
-            <if test='step != null and step.trim() != &quot;&quot;'> step = #{step}, </if>
-            <if test='results != null and results.trim() != &quot;&quot;'> results = #{results}, </if>
-            <if test='rawDataId != null'> rawDataId = #{rawDataId}, </if>
-        </trim>
-    </update>
 </mapper>

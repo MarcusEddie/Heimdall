@@ -5,6 +5,9 @@ package org.iman.Heimdallr.vo;
 
 import java.io.Serializable;
 
+import org.iman.Heimdallr.constants.enums.DBType;
+import org.iman.Heimdallr.constants.enums.TestCaseState;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -22,8 +25,14 @@ public class DBConnectionInfoVo implements Serializable{
     @JsonProperty("appId")
     private Long appId;
     
+    @JsonProperty("appName")
+    private String appName;
+    
     @JsonProperty("name")
     private String name;
+    
+    @JsonProperty("dbType")
+    private DBType dbType;
     
     @JsonProperty("url")
     private String url;
@@ -37,6 +46,9 @@ public class DBConnectionInfoVo implements Serializable{
     @JsonProperty("header")
     private JsonNode header;
 
+    @JsonProperty("state")
+    private TestCaseState state;
+    
     public DBConnectionInfoVo() {
         super();
     }
@@ -68,6 +80,14 @@ public class DBConnectionInfoVo implements Serializable{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DBType getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(DBType dbType) {
+        this.dbType = dbType;
     }
 
     public String getUrl() {
@@ -102,10 +122,29 @@ public class DBConnectionInfoVo implements Serializable{
         this.header = header;
     }
 
+    
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public TestCaseState getState() {
+        return state;
+    }
+
+    public void setState(TestCaseState state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
-        return "DBConnectionInfoVo [id=" + id + ", appId=" + appId + ", name=" + name + ", url="
-                + url + ", userName=" + userName + ", password=" + password + ", header=" + header
+        return "DBConnectionInfoVo [id=" + id + ", appId=" + appId + ", appName=" + appName
+                + ", name=" + name + ", dbType=" + dbType + ", url=" + url + ", userName="
+                + userName + ", password=" + password + ", header=" + header + ", state=" + state
                 + "]";
     }
+
 }

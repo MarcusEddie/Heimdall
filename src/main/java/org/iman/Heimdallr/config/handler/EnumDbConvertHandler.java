@@ -13,6 +13,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
 import org.iman.Heimdallr.constants.enums.BaseEnum;
 import org.iman.Heimdallr.constants.enums.CasePriority;
+import org.iman.Heimdallr.constants.enums.DBType;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
 
@@ -20,7 +21,7 @@ import org.iman.Heimdallr.constants.enums.ResultCheckMode;
  * @author ey
  *
  */
-@MappedTypes({HttpMethod.class, CasePriority.class, ResultCheckMode.class})
+@MappedTypes({HttpMethod.class, CasePriority.class, ResultCheckMode.class, DBType.class})
 public class EnumDbConvertHandler <T extends BaseEnum> extends BaseTypeHandler<T>{
 
     private Class<T> enumType;

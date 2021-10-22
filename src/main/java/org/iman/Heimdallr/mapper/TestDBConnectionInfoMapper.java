@@ -24,7 +24,7 @@ public interface TestDBConnectionInfoMapper extends BaseMapper<DBConnectionInfo>
 
     public List<DBConnectionInfo> selectBy(DBConnectionInfo criteria);
 
-    public List<DBConnectionInfo> selectByPage(@Param("connInfo") DBConnectionInfo criteria,
+    public List<DBConnectionInfo> selectByPage(@Param("criteria") DBConnectionInfo criteria,
             @Param("offset") Integer offset, @Param("capacity") Integer capacity);
 
     public Integer countByPage(DBConnectionInfo criteria);

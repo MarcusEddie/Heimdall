@@ -96,6 +96,7 @@
 			<if test='step != null and step.trim() != &quot;&quot;'> step = #{step}, </if>
 			<if test='results != null and results.trim() != &quot;&quot;'> results = #{results}, </if>
 			<if test='rawDataId != null'> rawDataId = #{rawDataId}, </if>
+			<if test='modifiedBy != null and modifiedBy.trim() != &quot;&quot;'> modifiedBy = #{modifiedBy}, </if>
 		</trim>
 	</update>
 </mapper>

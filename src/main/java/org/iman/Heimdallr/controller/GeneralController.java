@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.iman.Heimdallr.constants.enums.CasePriority;
+import org.iman.Heimdallr.constants.enums.DBType;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
 import org.iman.Heimdallr.vo.Response;
@@ -41,6 +42,13 @@ public class GeneralController {
     public Response<List<ResultCheckMode>> getCaseCheckMethod() {
         Response<List<ResultCheckMode>> resp = new Response<List<ResultCheckMode>>();
         resp.setData(new ArrayList<ResultCheckMode>(Arrays.asList(ResultCheckMode.values())));
+        return resp;
+    }
+    
+    @GetMapping("getDBType")
+    public Response<List<DBType>> getDBType() {
+        Response<List<DBType>> resp = new Response<List<DBType>>();
+        resp.setData(new ArrayList<DBType>(Arrays.asList(DBType.values())));
         return resp;
     }
 }
