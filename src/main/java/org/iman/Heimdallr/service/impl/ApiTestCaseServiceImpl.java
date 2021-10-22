@@ -19,7 +19,6 @@ import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.mapper.ApiTestCaseDetailsMapper;
 import org.iman.Heimdallr.service.APIService;
 import org.iman.Heimdallr.service.ApiTestCaseService;
-import org.iman.Heimdallr.service.CaseGeneralInfoService;
 import org.iman.Heimdallr.utils.BeanUtils;
 import org.iman.Heimdallr.vo.ApiDeclarationVo;
 import org.iman.Heimdallr.vo.ApiTestCaseVo;

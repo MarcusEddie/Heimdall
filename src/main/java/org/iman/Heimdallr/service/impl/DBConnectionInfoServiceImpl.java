@@ -14,6 +14,8 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.iman.Heimdallr.constants.Consts;
+import org.iman.Heimdallr.constants.enums.DBDriver;
+import org.iman.Heimdallr.constants.enums.DBType;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.entity.DBConnectionInfo;
 import org.iman.Heimdallr.entity.Page;
@@ -221,7 +223,12 @@ public class DBConnectionInfoServiceImpl implements DBConnectionInfoService {
     public DBConnection testDBConnection(DBConnectionInfoVo params) {
         DBConnection rs = new DBConnection();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            if (DBType.MySQL.equals(params.getDbType())) {
+                Class.forName(DBDriver.MySQL.getDriver());
+            } else if (DBType.HANA.equals(params.getDbType())) {
+                Class.forName(DBDriver.HANA.getDriver());
+            }
+            
             Connection conn = DriverManager.getConnection(params.getUrl(), params.getUserName(), params.getPassword()); 
             Statement stsm = conn.createStatement();
             ResultSet rset = stsm.executeQuery("select * from helloWorld");
