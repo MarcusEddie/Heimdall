@@ -11,22 +11,26 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
+import org.iman.Heimdallr.constants.enums.Action;
 import org.iman.Heimdallr.constants.enums.BaseEnum;
 import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.DBType;
+import org.iman.Heimdallr.constants.enums.FuncTag;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
+
 
 /**
  * @author ey
  *
  */
-@MappedTypes({HttpMethod.class, CasePriority.class, ResultCheckMode.class, DBType.class})
-public class EnumDbConvertHandler <T extends BaseEnum> extends BaseTypeHandler<T>{
+@MappedTypes({ HttpMethod.class, CasePriority.class, ResultCheckMode.class, DBType.class,
+        FuncTag.class, Action.class })
+public class EnumDbConvertHandler<T extends BaseEnum> extends BaseTypeHandler<T> {
 
     private Class<T> enumType;
     private T[] enums;
-    
+
     public EnumDbConvertHandler() {
         super();
     }
@@ -35,7 +39,7 @@ public class EnumDbConvertHandler <T extends BaseEnum> extends BaseTypeHandler<T
         if (null == enumType) {
             throw new IllegalArgumentException("enumType is required");
         }
-        
+
         this.enumType = enumType;
         this.enums = enumType.getEnumConstants();
         if (null == this.enums || (null != this.enums && this.enums.length == 0)) {
@@ -60,7 +64,7 @@ public class EnumDbConvertHandler <T extends BaseEnum> extends BaseTypeHandler<T
 
     @Override
     public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        if(null == rs || (null != rs && null == rs.getObject(columnIndex))) {
+        if (null == rs || (null != rs && null == rs.getObject(columnIndex))) {
             return null;
         }
         Integer idx = rs.getInt(columnIndex);
@@ -82,7 +86,7 @@ public class EnumDbConvertHandler <T extends BaseEnum> extends BaseTypeHandler<T
                 return t;
             }
         }
-        
+
         throw new IllegalArgumentException(
                 digit + "can not be converted to a enum of " + enumType.getSimpleName());
     }

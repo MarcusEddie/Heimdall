@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.DataHistoryMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.DataHistory" resultType="org.iman.Heimdallr.entity.DataHistory">
+        select pgd.id, pgd.dataId, pgd.actionType, pgd.tableName, pgd.oldData, pgd.newData, pgd.createBy, pgd.createTime
+        from  dataHistory pgd
+        where 1 = 1
+        <if test = 'id != null'> and pgd.id = #{id} </if>
+        <if test = 'dataId != null'> and pgd.dataId = #{dataId} </if>
+        <if test = 'tableName != null'> and pgd.tableName = #{tableName} </if>
+        order by createTime DESC, id DESC
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.DataHistory" resultType="org.iman.Heimdallr.entity.DataHistory">
+        select pgd.id, pgd.dataId, pgd.actionType, pgd.tableName, pgd.oldData, pgd.newData,  pgd.createBy, pgd.createTime
+        from  dataHistory pgd
+        where 1 = 1
+        <if test = 'criteria.id != null'> and pgd.id = #{criteria.id} </if>
+        <if test = 'criteria.dataId != null'> and pgd.dataId = #{criteria.dataId} </if>
+        <if test = 'criteria.tableName != null'> and pgd.tableName = #{criteria.tableName} </if>
+        order by createTime DESC, id DESC
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.DataHistory" resultType="java.lang.Integer">
+        select count(pgd.id)
+        from  dataHistory pgd
+        where 1 = 1
+        <if test = 'id != null'> and pgd.id = #{id} </if>
+        <if test = 'dataId != null'> and  dataId = #{dataId} </if>
+        <if test = 'tableName != null'> and  tableName = #{tableName} </if>
+    </select>
+
+</mapper>

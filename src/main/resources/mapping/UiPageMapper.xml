@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.UiPageMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.UiPage" resultType="org.iman.Heimdallr.entity.UiPage">
+        select pgd.id, pgd.appId, pgd.moduleId, pgd.functionId, pgd.name, pgd.url, pgd.enabled, pgd.deleted, pgd.createBy, pgd.createTime, pgd.modifiedBy, pgd.modifiedTime
+        from  pageDeclaration pgd
+        where 1 = 1
+        <if test = 'id != null'> and pgd.id = #{id} </if>
+        <if test = 'appId != null'> and pgd.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and pgd.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and pgd.functionId = #{functionId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and pgd.name like concat('%', #{name}, '%')</if>
+        <if test = 'url != null and url.trim() != &quot;&quot;'> and pgd.url = #{url}</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and pgd.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and pgd.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and pgd.deleted = 1 </when> 
+            <otherwise>and pgd.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.UiPage" resultType="org.iman.Heimdallr.entity.UiPage">
+        select pgd.id, pgd.appId, pgd.moduleId, pgd.functionId, pgd.name, pgd.url, pgd.enabled, pgd.deleted, pgd.createBy, pgd.createTime, pgd.modifiedBy, pgd.modifiedTime
+        from  pageDeclaration pgd
+        where 1 = 1
+        <if test = 'criteria.id != null'> and pgd.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and pgd.appId = #{criteria.appId} </if>
+        <if test = 'criteria.moduleId != null'> and pgd.moduleId = #{criteria.moduleId} </if>
+        <if test = 'criteria.functionId != null'> and pgd.functionId = #{criteria.functionId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and pgd.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.url != null and criteria.url.trim() != &quot;&quot;'> and pgd.url = #{criteria.url}</if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and pgd.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and pgd.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and pgd.deleted = 1 </when> 
+            <otherwise>and pgd.deleted = 0 </otherwise>
+        </choose>
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.UiPage" resultType="java.lang.Integer">
+        select count(pgd.id)
+        from  pageDeclaration pgd
+        where 1 = 1
+        <if test = 'id != null'> and pgd.id = #{id} </if>
+        <if test = 'appId != null'> and pgd.appId = #{appId} </if>
+        <if test = 'moduleId != null'> and pgd.moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and pgd.functionId = #{functionId} </if>
+        <if test = 'name != null and name.trim() != &quot;&quot;'> and pgd.name like concat('%', #{name}, '%')</if>
+        <if test = 'url != null and url.trim() != &quot;&quot;'> and pgd.url = #{url}</if>
+        <choose>
+            <when test = 'enabled != null and enabled == false'> and pgd.enabled = 0 </when>
+            <when test = 'enabled != null and enabled == true'> and pgd.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'deleted != null and deleted == true'> and pgd.deleted = 1 </when> 
+            <otherwise>and pgd.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.UiPage">
+        update pageDeclaration
+        set deleted = 1
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+    </update>
+    
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.UiPage">
+        update pageDeclaration
+        set enabled = #{enabled}
+        where 1= 1
+        <if test = 'id != null'> and id = #{id} </if>
+        <if test = 'appId != null'> and appId = #{appId} </if>
+        <if test = 'moduleId != null'> and moduleId = #{moduleId} </if>
+        <if test = 'functionId != null'> and functionId = #{functionId} </if>
+    </update>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.UiPage">
+        update pageDeclaration
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test = 'appId != null'> appId = #{appId}, </if>
+	        <if test = 'moduleId != null'> moduleId = #{moduleId}, </if>
+	        <if test = 'functionId != null'> functionId = #{functionId}, </if>
+            <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+	        <if test = 'url != null and url.trim() != &quot;&quot;'> url = #{url}, </if>
+            <if test = 'modifiedBy != null and modifiedBy.trim() != &quot;&quot;'>  modifiedBy = #{modifiedBy}, </if>
+        </trim>
+    </update>
+</mapper>
