@@ -81,6 +81,11 @@
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>com.cronutils</groupId>
+		    <artifactId>cron-utils</artifactId>
+		    <version>9.1.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>

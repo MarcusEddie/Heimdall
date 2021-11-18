@@ -19,7 +19,8 @@ public enum FuncTag implements BaseEnum {
     MIND_RAW_DATA(6, "mindRawData"),
     PAGE_DECLARATION(7, "pageDeclaration"), 
     TEST_DB_CONNECTION_INFO(8, "testDBConnectionInfo"),
-    UI_TEST_CASE_DETAILS(9, "uiTestCaseDetails");
+    UI_TEST_CASE_DETAILS(9, "uiTestCaseDetails"),
+    TEST_PLAN(10, "testPlan");
 
     private Integer code;
     private String val;

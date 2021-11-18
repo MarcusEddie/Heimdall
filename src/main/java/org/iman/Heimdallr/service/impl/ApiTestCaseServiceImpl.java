@@ -4,6 +4,7 @@
 package org.iman.Heimdallr.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -89,6 +90,16 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
     }
     
     @Override
+    public List<ApiTestCase> getByIds(List<Long> ids) throws DataConversionException {
+        if (CollectionUtils.sizeIsEmpty(ids)) {
+            return Collections.EMPTY_LIST;
+        }
+        
+        List<ApiTestCase> testCases = apiTestCaseDetailsMapper.selectBatchIds(ids);
+        return testCases;
+    }
+    
+    @Override
     @Transactional
     public ApiTestCase update(ApiTestCaseVo vo) throws DataConversionException {
         Optional.ofNullable(vo).orElseThrow(() -> {
@@ -152,6 +163,7 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
     }
 
     @Override
+    @Transactional
     public Integer activate(List<ApiTestCaseVo> vos) throws DataConversionException {
         if (CollectionUtils.sizeIsEmpty(vos)) {
             return 0;
@@ -180,6 +192,7 @@ public class ApiTestCaseServiceImpl implements ApiTestCaseService {
     }
     
     @Override
+    @Transactional
     public Integer deactivate(List<ApiTestCaseVo> vos) throws DataConversionException {
         if (CollectionUtils.sizeIsEmpty(vos)) {
             return 0;

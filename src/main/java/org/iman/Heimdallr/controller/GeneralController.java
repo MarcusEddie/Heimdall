@@ -11,6 +11,7 @@ import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.DBType;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
+import org.iman.Heimdallr.constants.enums.TestType;
 import org.iman.Heimdallr.vo.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,13 @@ public class GeneralController {
     public Response<List<DBType>> getDBType() {
         Response<List<DBType>> resp = new Response<List<DBType>>();
         resp.setData(new ArrayList<DBType>(Arrays.asList(DBType.values())));
+        return resp;
+    }
+    
+    @GetMapping("getTestType")
+    public Response<List<TestType>> getTestTypes(){
+        Response<List<TestType>> resp = new Response<List<TestType>>();
+        resp.setData(new ArrayList<TestType>(Arrays.asList(TestType.values())));
         return resp;
     }
 }

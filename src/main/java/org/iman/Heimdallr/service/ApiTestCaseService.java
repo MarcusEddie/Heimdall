@@ -22,6 +22,8 @@ public interface ApiTestCaseService {
     
     public Pagination<ApiTestCase> getByParams(ApiTestCaseVo criteria, Page page) throws DataConversionException;
     
+    public List<ApiTestCase> getByIds(List<Long> ids) throws DataConversionException;
+    
     public ApiTestCase update(ApiTestCaseVo vo) throws DataConversionException;
     
     public Optional<ApiTestCase> delete(ApiTestCaseVo vo) throws DataConversionException;

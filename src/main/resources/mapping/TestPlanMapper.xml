@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.TestPlanMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
+        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        from  testPlan tp
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tp.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and tp.appId = #{criteria.appId} </if>
+        <if test = 'criteria.moduleId != null'> and tp.moduleId = #{criteria.moduleId} </if>
+        <if test = 'criteria.functionId != null'> and tp.functionId = #{criteria.functionId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
+        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tp.deleted = 1 </when> 
+            <otherwise>and tp.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectById" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
+        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        from  testPlan tp
+        where tp.id = #{id}
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
+        select tp.id, tp.appId,  tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        from  testPlan tp
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tp.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and tp.appId = #{criteria.appId} </if>
+        <if test = 'criteria.moduleId != null'> and tp.moduleId = #{criteria.moduleId} </if>
+        <if test = 'criteria.functionId != null'> and tp.functionId = #{criteria.functionId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
+        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tp.deleted = 1 </when> 
+            <otherwise>and tp.deleted = 0 </otherwise>
+        </choose>
+        
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="java.lang.Integer">
+        select count(tp.id)
+        from  testPlan tp
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tp.id = #{criteria.id} </if>
+        <if test = 'criteria.appId != null'> and tp.appId = #{criteria.appId} </if>
+        <if test = 'criteria.moduleId != null'> and tp.moduleId = #{criteria.moduleId} </if>
+        <if test = 'criteria.functionId != null'> and tp.functionId = #{criteria.functionId} </if>
+        <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
+        <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
+        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tp.deleted = 1 </when> 
+            <otherwise>and tp.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.TestPlan">
+        update testPlan
+        set deleted = 1
+        where id = #{id}
+    </update>
+    
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.TestPlan">
+        update testPlan
+        set enabled = #{enabled}
+        where id = #{id}
+    </update>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.TestPlan">
+        update testPlan
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test='appId != null'> appId = #{appId}, </if>
+            <if test='moduleId != null'> moduleId = #{moduleId}, </if>
+            <if test='functionId != null'> functionId = #{functionId}, </if>
+            <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
+            <if test='testType != null'> testType = #{testType}, </if>
+            <if test='priority != null'> priority = #{priority}, </if>
+            <if test='repeat != null'> repeat = #{repeat}, </if>
+            <if test='triggerTime != null '> triggerTime = #{triggerTime}, </if>
+            <if test='cron != null and steps.trim() != &quot;&quot;'> cron = #{cron}, </if>
+            <if test='caseSet != null'> caseSet = #{caseSet}, </if>
+            <if test='caseSize != null'> caseSize = #{caseSize}, </if>
+            <if test='modifiedBy != null and modifiedBy.trim() != &quot;&quot;'> modifiedBy = #{modifiedBy}, </if>
+        </trim>
+    </update>
+    
+</mapper>

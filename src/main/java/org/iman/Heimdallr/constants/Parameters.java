@@ -17,5 +17,6 @@ public class Parameters {
     public static final String FUNCTION_ID = "functionId";
     public static final String FUNCTION_NAME = "functionName";
     public static final String CASE_DATA = "caseData";
+    public static final String CRON_EXPRESSION = "cron";
 
 }
