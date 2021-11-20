@@ -3,7 +3,7 @@
 <mapper namespace="org.iman.Heimdallr.mapper.TestPlanMapper">
     
     <select id="selectBy" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
-        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeatFlag, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
         from  testPlan tp
         where 1 = 1
         <if test = 'criteria.id != null'> and tp.id = #{criteria.id} </if>
@@ -13,7 +13,7 @@
         <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
         <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
         <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
-        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <if test = 'criteria.repeatFlag != null'> and tp.repeatFlag = #{criteria.repeatFlag} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
@@ -25,14 +25,20 @@
         </choose>
     </select>
     
+    <select id="selectNonRepeatPlanBeforeEndTime" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
+        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeatFlag, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        from  testPlan tp
+        where tp.triggerTime <![CDATA[ <= ]]> #{criteria.triggerTime} and tp.repeatFlag = #{criteria.repeatFlag} 
+    </select>
+    
     <select id="selectById" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
-        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        select tp.id, tp.appId, tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeatFlag, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
         from  testPlan tp
         where tp.id = #{id}
     </select>
     
     <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TestPlan" resultType="org.iman.Heimdallr.entity.TestPlan">
-        select tp.id, tp.appId,  tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeat, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
+        select tp.id, tp.appId,  tp.moduleId,  tp.functionId, tp.name, tp.testType, tp.priority, tp.repeatFlag, tp.triggerTime, tp.cron, tp.caseSet, tp.caseSize, tp.enabled, tp.deleted, tp.createBy, tp.createTime, tp.modifiedBy, tp.modifiedTime
         from  testPlan tp
         where 1 = 1
         <if test = 'criteria.id != null'> and tp.id = #{criteria.id} </if>
@@ -42,7 +48,7 @@
         <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
         <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
         <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
-        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <if test = 'criteria.repeatFlag != null'> and tp.repeatFlag = #{criteria.repeatFlag} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
@@ -67,7 +73,7 @@
         <if test = 'criteria.name != null and criteria.name.trim() != &quot;&quot;'> and tp.name like concat('%', #{criteria.name}, '%')</if>
         <if test = 'criteria.testType != null'> and tp.testType = #{criteria.testType} </if>
         <if test = 'criteria.priority != null'> and tp.priority = #{criteria.priority} </if>
-        <if test = 'criteria.repeat != null'> and tp.priority = #{criteria.repeat} </if>
+        <if test = 'criteria.repeatFlag != null'> and tp.repeatFlag = #{criteria.repeatFlag} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tp.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tp.enabled = 1 </when>
@@ -100,7 +106,7 @@
             <if test='name != null and name.trim() != &quot;&quot;'> name = #{name}, </if>
             <if test='testType != null'> testType = #{testType}, </if>
             <if test='priority != null'> priority = #{priority}, </if>
-            <if test='repeat != null'> repeat = #{repeat}, </if>
+            <if test='repeatFlag != null'> repeatFlag = #{repeatFlag}, </if>
             <if test='triggerTime != null '> triggerTime = #{triggerTime}, </if>
             <if test='cron != null and steps.trim() != &quot;&quot;'> cron = #{cron}, </if>
             <if test='caseSet != null'> caseSet = #{caseSet}, </if>

@@ -3,8 +3,6 @@
  */
 package org.iman.Heimdallr.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,11 +13,14 @@ import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TestPlan;
+import org.iman.Heimdallr.entity.UiTestCase;
 import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.mapper.TestPlanMapper;
 import org.iman.Heimdallr.service.ApiTestCaseService;
 import org.iman.Heimdallr.service.TestPlanService;
+import org.iman.Heimdallr.service.UiTestCaseService;
 import org.iman.Heimdallr.utils.BeanUtils;
+import org.iman.Heimdallr.utils.TimeUtils;
 import org.iman.Heimdallr.vo.Pagination;
 import org.iman.Heimdallr.vo.TestPlanVo;
 import org.slf4j.Logger;
@@ -28,11 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.time.ExecutionTime;
-import com.cronutils.parser.CronParser;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -48,6 +44,8 @@ public class TestPlanServiceImpl implements TestPlanService {
     private TestPlanMapper testPlanMapper;
     @Autowired
     private ApiTestCaseService apiTestCaseService;
+    @Autowired
+    private UiTestCaseService uiTestCaseService;
     
     @Override
     public TestPlan save(TestPlanVo vo) throws DataConversionException {
@@ -56,6 +54,20 @@ public class TestPlanServiceImpl implements TestPlanService {
         });
         
         TestPlan plan = BeanUtils.copy(vo, TestPlan.class).get();
+        
+        if (null == plan.getTriggerTime()) {
+            plan.setRepeatFlag(true);
+        } else {
+            plan.setRepeatFlag(false);
+        }
+        Iterator<JsonNode> it = plan.getCaseSet().iterator();
+        int cnt = 0;
+        while (it.hasNext()) {
+            JsonNode node = (JsonNode) it.next();
+            cnt++;
+        }
+        plan.setCaseSize(cnt);
+        
         
         testPlanMapper.insert(plan);
         
@@ -81,8 +93,8 @@ public class TestPlanServiceImpl implements TestPlanService {
             Iterator<TestPlan> it = plans.iterator();
             while (it.hasNext()) {
                 TestPlan testPlan = (TestPlan) it.next();
-                if (testPlan.getRepeat()) {
-                    testPlan.setNextTriggerTime(calculateNextTriggerTime(testPlan.getCron()));
+                if (testPlan.getRepeatFlag()) {
+                    testPlan.setNextTriggerTime(TimeUtils.calculateNextTriggerTime(testPlan.getCron()));
                 }
             }
         }
@@ -105,8 +117,7 @@ public class TestPlanServiceImpl implements TestPlanService {
         TestPlan plan = getById(criteria.getId()).get();
         Pagination<ApiTestCase> rs = new Pagination<ApiTestCase>(page.getCurrent(),
                 page.getPageSize());
-        System.out.println(plan.getCaseSet().get("data").toString());
-        Iterator<JsonNode> it = plan.getCaseSet().get("data").iterator();
+        Iterator<JsonNode> it = plan.getCaseSet().iterator();
         List<Long> caseIds = new ArrayList<Long>();
         while (it.hasNext()) {
             JsonNode jsonNode = (JsonNode) it.next();
@@ -126,6 +137,37 @@ public class TestPlanServiceImpl implements TestPlanService {
     }
     
     @Override
+    public Pagination<UiTestCase> getUiTestCaseByPlanId(TestPlanVo criteria, Page page)
+            throws DataConversionException {
+        Optional.ofNullable(criteria).orElseThrow(() -> {
+            throw new IllegalArgumentException("TestPlanVo is required");
+        });
+        Optional.ofNullable(page).orElseThrow(() -> {
+            throw new IllegalArgumentException("page is required");
+        });
+        TestPlan plan = getById(criteria.getId()).get();
+        Pagination<UiTestCase> rs = new Pagination<UiTestCase>(page.getCurrent(),
+                page.getPageSize());
+        Iterator<JsonNode> it = plan.getCaseSet().iterator();
+        List<Long> caseIds = new ArrayList<Long>();
+        while (it.hasNext()) {
+            JsonNode jsonNode = (JsonNode) it.next();
+            caseIds.add(jsonNode.asLong());
+        }
+        rs.setTotal(caseIds.size());
+        
+        caseIds = caseIds.subList(page.getOffset(), caseIds.size());
+        if (caseIds.size() > page.getCapacity()) {
+            caseIds = caseIds.subList(0, caseIds.size());
+        }
+        
+        List<UiTestCase> testCases = uiTestCaseService.getByIds(caseIds);
+        rs.setList(testCases);
+
+        return rs;
+    }
+    
+    @Override
     public Optional<TestPlan> getById(Long id) {
         TestPlan plan = new TestPlan(id);
         List<TestPlan> plans = testPlanMapper.selectById(plan);
@@ -135,8 +177,8 @@ public class TestPlanServiceImpl implements TestPlanService {
         }
         
         TestPlan rs = plans.get(0);
-        if (rs.getRepeat()) {
-            rs.setNextTriggerTime(calculateNextTriggerTime(rs.getCron()));
+        if (rs.getRepeatFlag()) {
+            rs.setNextTriggerTime(TimeUtils.calculateNextTriggerTime(rs.getCron()));
         }
         
         return Optional.of(rs);
@@ -238,16 +280,4 @@ public class TestPlanServiceImpl implements TestPlanService {
 
         return vos.size();
     }
-    
-    private LocalDateTime calculateNextTriggerTime(String cronStr){
-        CronDefinition cronDefinition = CronDefinitionBuilder
-                .instanceDefinitionFor(CronType.QUARTZ);
-        // Create a parser based on provided definition
-        CronParser parser = new CronParser(cronDefinition);
-        ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(cronStr));
-        ZonedDateTime now = ZonedDateTime.now();
-        Optional<ZonedDateTime> nextExecution = executionTime.nextExecution(now);
-        return nextExecution.get().toLocalDateTime();
-    }
-
 }

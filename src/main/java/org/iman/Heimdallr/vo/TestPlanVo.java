@@ -41,8 +41,8 @@ public class TestPlanVo implements Serializable{
     @JsonProperty("priority")
     private CasePriority priority;
     
-    @JsonProperty("repeat")
-    private Boolean repeat;
+    @JsonProperty("repeatFlag")
+    private Boolean repeatFlag;
     
     @JsonProperty("triggerTime")
     private LocalDateTime triggerTime;
@@ -150,12 +150,12 @@ public class TestPlanVo implements Serializable{
         this.priority = priority;
     }
 
-    public Boolean getRepeat() {
-        return repeat;
+    public Boolean getRepeatFlag() {
+        return repeatFlag;
     }
 
-    public void setRepeat(Boolean repeat) {
-        this.repeat = repeat;
+    public void setRepeatFlag(Boolean repeat) {
+        this.repeatFlag = repeatFlag;
     }
 
     public LocalDateTime getTriggerTime() {
@@ -211,7 +211,7 @@ public class TestPlanVo implements Serializable{
         return "TestPlanVo [id=" + id + ", appId=" + appId + ", appName=" + appName + ", moduleId="
                 + moduleId + ", moduleName=" + moduleName + ", functionId=" + functionId
                 + ", functionName=" + functionName + ", name=" + name + ", testType=" + testType
-                + ", priority=" + priority + ", repeat=" + repeat + ", triggerTime=" + triggerTime
+                + ", priority=" + priority + ", repeatFlag=" + repeatFlag + ", triggerTime=" + triggerTime
                 + ", cron=" + cron + ", nextTriggerTime=" + nextTriggerTime + ", caseSet=" + caseSet
                 + ", caseSize=" + caseSize + ", state=" + state + "]";
     }

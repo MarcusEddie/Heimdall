@@ -38,7 +38,7 @@ public class TestPlan extends BaseEntity implements Serializable{
     
     private CasePriority priority;
     
-    private Boolean repeat;
+    private Boolean repeatFlag;
     
     private LocalDateTime triggerTime;
     
@@ -114,12 +114,12 @@ public class TestPlan extends BaseEntity implements Serializable{
         this.priority = priority;
     }
 
-    public Boolean getRepeat() {
-        return repeat;
+    public Boolean getRepeatFlag() {
+        return repeatFlag;
     }
 
-    public void setRepeat(Boolean repeat) {
-        this.repeat = repeat;
+    public void setRepeatFlag(Boolean repeatFlag) {
+        this.repeatFlag = repeatFlag;
     }
 
     public LocalDateTime getTriggerTime() {
@@ -166,7 +166,7 @@ public class TestPlan extends BaseEntity implements Serializable{
     public String toString() {
         return "TestPlan [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
                 + ", functionId=" + functionId + ", name=" + name + ", testType=" + testType
-                + ", priority=" + priority + ", repeat=" + repeat + ", triggerTime=" + triggerTime
+                + ", priority=" + priority + ", repeatFlag=" + repeatFlag + ", triggerTime=" + triggerTime
                 + ", cron=" + cron + ", nextTriggerTime=" + nextTriggerTime + ", caseSet=" + caseSet
                 + ", caseSize=" + caseSize + ", getCreateBy()=" + getCreateBy() + ", getEnabled()="
                 + getEnabled() + ", getDeleted()=" + getDeleted() + ", getCreateTime()="

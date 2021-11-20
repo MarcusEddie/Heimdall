@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.iman.Heimdallr.entity.TestPlan;
-import org.iman.Heimdallr.entity.UiTestCase;
 import org.springframework.stereotype.Repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -23,6 +22,8 @@ public interface TestPlanMapper extends BaseMapper<TestPlan> {
 
     public int insert(TestPlan testCase);
 
+    public List<TestPlan> selectNonRepeatPlanBeforeEndTime(@Param("criteria") TestPlan criteria);
+    
     public List<TestPlan> selectBy(@Param("criteria") TestPlan criteria);
 
     public List<TestPlan> selectByPage(@Param("criteria") TestPlan criteria, @Param("offset") Integer offset,

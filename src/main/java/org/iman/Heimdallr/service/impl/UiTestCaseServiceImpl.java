@@ -4,6 +4,7 @@
 package org.iman.Heimdallr.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.iman.Heimdallr.constants.enums.FuncTag;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.entity.ApiDeclaration;
+import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.UiTestCase;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.UiPage;
@@ -85,6 +87,16 @@ public class UiTestCaseServiceImpl implements UiTestCaseService {
         }
         
         return Optional.of(testCase.get(0));
+    }
+    
+    @Override
+    public List<UiTestCase> getByIds(List<Long> ids) throws DataConversionException {
+        if (CollectionUtils.sizeIsEmpty(ids)) {
+            return Collections.EMPTY_LIST;
+        }
+        
+        List<UiTestCase> testCases = uiTestCaseDetailsMapper.selectBatchIds(ids);
+        return testCases;
     }
     
     @Override

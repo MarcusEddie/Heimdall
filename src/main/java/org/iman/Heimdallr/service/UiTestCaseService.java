@@ -24,6 +24,8 @@ public interface UiTestCaseService {
     
     public Optional<UiTestCase> getById(Long id) throws DataConversionException;
     
+    public List<UiTestCase> getByIds(List<Long> ids) throws DataConversionException;
+    
     public UiTestCase update(UiTestCaseVo vo) throws DataConversionException;
     
     public Optional<UiTestCase> delete(UiTestCaseVo vo) throws DataConversionException;

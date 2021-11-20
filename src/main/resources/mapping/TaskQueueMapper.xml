@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.TaskQueueMapper">
+    
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
+        <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
+        <if test = 'criteria.planName != null and criteria.planName.trim() != &quot;&quot;'> and tp.planName like concat('%', #{criteria.planName}, '%')</if>
+        <if test = 'criteria.type != null'> and tq.type = #{criteria.type} </if>
+        <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
+        <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
+        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tq.deleted = 1 </when> 
+            <otherwise>and tq.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectById" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where tq.id = #{id}
+    </select>
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+       select tq.id, tq.planId, tq.planName,  tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
+        <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
+        <if test = 'criteria.planName != null and criteria.planName.trim() != &quot;&quot;'> and tp.planName like concat('%', #{criteria.planName}, '%')</if>
+        <if test = 'criteria.type != null'> and tq.type = #{criteria.type} </if>
+        <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
+        <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
+        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tq.deleted = 1 </when> 
+            <otherwise>and tq.deleted = 0 </otherwise>
+        </choose>
+        
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="java.lang.Integer">
+        select count(tq.id)
+        from  taskQueue tq
+        where 1 = 1
+        <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
+        <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
+        <if test = 'criteria.planName != null and criteria.planName.trim() != &quot;&quot;'> and tp.planName like concat('%', #{criteria.planName}, '%')</if>
+        <if test = 'criteria.type != null'> and tq.type = #{criteria.type} </if>
+        <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
+        <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
+        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
+        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tq.deleted = 1 </when> 
+            <otherwise>and tq.deleted = 0 </otherwise>
+        </choose>
+    </select>
+    
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.TaskQueue">
+        update taskQueue
+        set deleted = 1
+        where id = #{id}
+    </update>
+    
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.TaskQueue">
+        update taskQueue
+        set enabled = #{enabled}
+        where id = #{id}
+    </update>
+    
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.TaskQueue">
+        update taskQueue
+        <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
+            <if test='planId != null'> planId = #{planId}, </if>
+            <if test='planName != null and planName.trim() != &quot;&quot;'> planName = #{planName}, </if>
+            <if test='taskState != null'> taskState = #{taskState}, </if>
+            <if test='triggerTime != null'> triggerTime = #{triggerTime}, </if>
+            <if test='testType != null'> testType = #{testType}, </if>
+            <if test='priority != null'> priority = #{priority}, </if>
+            <if test='modifiedBy != null and modifiedBy.trim() != &quot;&quot;'> modifiedBy = #{modifiedBy}, </if>
+        </trim>
+    </update>
+    
+    <update id="changeToDelay" parameterType="org.iman.Heimdallr.entity.TaskQueue">
+        update taskQueue
+        set modifiedBy = #{modifiedBy}, taskState = #{taskState}
+        where enabled = 1 and deleted = 0 and taskState = 1 and triggerTime  <![CDATA[ < ]]>  #{triggerTime}
+    </update>
+</mapper>

@@ -3,10 +3,10 @@ package org.iman.Heimdallr.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.iman.Heimdallr.entity.ApiDeclaration;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TestPlan;
+import org.iman.Heimdallr.entity.UiTestCase;
 import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.vo.Pagination;
 import org.iman.Heimdallr.vo.TestPlanVo;
@@ -18,6 +18,8 @@ public interface TestPlanService {
     public Pagination<TestPlan> getByParams(TestPlanVo criteria, Page page) throws DataConversionException;
     
     public Pagination<ApiTestCase> getAPITestCasesByPlanId(TestPlanVo criteria, Page page) throws DataConversionException;
+    
+    public Pagination<UiTestCase> getUiTestCaseByPlanId(TestPlanVo criteria, Page page) throws DataConversionException;
     
     public Optional<TestPlan> getById(Long id);
     

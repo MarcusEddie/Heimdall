@@ -3,13 +3,11 @@
  */
 package org.iman.Heimdallr.controller;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Resource;
@@ -25,20 +23,29 @@ import org.iman.Heimdallr.entity.ApiDeclaration;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.AppStructure;
 import org.iman.Heimdallr.entity.DBConnectionInfo;
+import org.iman.Heimdallr.entity.TestCase;
 import org.iman.Heimdallr.entity.TestPlan;
+import org.iman.Heimdallr.entity.UiPage;
+import org.iman.Heimdallr.entity.UiTestCase;
 import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.service.APIService;
 import org.iman.Heimdallr.service.AppStructureService;
+import org.iman.Heimdallr.service.CaseGeneralInfoService;
 import org.iman.Heimdallr.service.DBConnectionInfoService;
 import org.iman.Heimdallr.service.TestPlanService;
+import org.iman.Heimdallr.service.UiPageService;
 import org.iman.Heimdallr.utils.BeanUtils;
 import org.iman.Heimdallr.utils.ControllerUtils;
+import org.iman.Heimdallr.utils.TimeUtils;
 import org.iman.Heimdallr.vo.TestPlanVo;
+import org.iman.Heimdallr.vo.UiPageVo;
+import org.iman.Heimdallr.vo.UiTestCaseVo;
 import org.iman.Heimdallr.vo.ApiDeclarationVo;
 import org.iman.Heimdallr.vo.ApiTestCaseVo;
 import org.iman.Heimdallr.vo.PageInfo;
 import org.iman.Heimdallr.vo.Pagination;
 import org.iman.Heimdallr.vo.Response;
+import org.iman.Heimdallr.vo.TestCaseVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,12 +53,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cronutils.descriptor.CronDescriptor;
-import com.cronutils.model.CronType;
-import com.cronutils.model.definition.CronDefinition;
-import com.cronutils.model.definition.CronDefinitionBuilder;
-import com.cronutils.model.time.ExecutionTime;
-import com.cronutils.parser.CronParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -73,6 +74,10 @@ public class TestPlanController {
     private AppStructureService appStructureService;
     @Resource
     private DBConnectionInfoService dbConnectionInfoService;
+    @Resource
+    private UiPageService uiPageService;
+    @Resource
+    private CaseGeneralInfoService caseGeneralInfoService;
 
     @PostMapping("addOnePlan")
     public Response<TestPlanVo> addOneAPI(@RequestBody TestPlanVo req) {
@@ -89,15 +94,14 @@ public class TestPlanController {
 
         return resp;
     }
-    
+
     @PostMapping("getPlanByParams")
     public Response<List<TestPlanVo>> getPlanByParams(@JsonParam TestPlanVo params,
             @JsonParam PageInfo pageInfo) {
         System.out.println("GET page TEST CASE BY PRAMS: " + params.toString());
         Response<List<TestPlanVo>> resp = new Response<List<TestPlanVo>>();
         try {
-            Pagination<TestPlan> cases = testPlanService.getByParams(params,
-                    pageInfo.toPage());
+            Pagination<TestPlan> cases = testPlanService.getByParams(params, pageInfo.toPage());
             List<TestPlanVo> vos = new ArrayList<TestPlanVo>();
             if (!CollectionUtils.sizeIsEmpty(cases.getList())) {
                 Iterator<TestPlan> it = cases.getList().iterator();
@@ -115,10 +119,10 @@ public class TestPlanController {
         } catch (DataConversionException e) {
             resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
         }
-        
+
         return resp;
     }
-    
+
     @PostMapping("getPlanById")
     public Response<TestPlanVo> getPlanById(@RequestBody TestPlanVo req) {
         Response<TestPlanVo> resp = new Response<TestPlanVo>();
@@ -138,7 +142,7 @@ public class TestPlanController {
 
         return resp.mkTime();
     }
-    
+
     @PostMapping("updateById")
     public Response<TestPlanVo> updateById(@RequestBody TestPlanVo req) {
         Response<TestPlanVo> resp = new Response<TestPlanVo>();
@@ -155,7 +159,7 @@ public class TestPlanController {
 
         return resp;
     }
-    
+
     @PostMapping("deleteById")
     public Response<TestPlanVo> deleteById(@RequestBody TestPlanVo req) {
         Response<TestPlanVo> resp = new Response<TestPlanVo>();
@@ -281,14 +285,15 @@ public class TestPlanController {
         System.out.println("cronExplain BY IDS" + req.toString());
         try {
             String cron = req.get(Parameters.CRON_EXPRESSION).asText();
-            CronDefinition cronDefinition = CronDefinitionBuilder
-                    .instanceDefinitionFor(CronType.QUARTZ);
-            // Create a parser based on provided definition
-            CronParser parser = new CronParser(cronDefinition);
-            // Create a descriptor for a specific Locale
-            CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
-            String description = descriptor.describe(parser.parse(cron));
-//             "1 2 0,12 3 4 ? 2021-2023"
+//            CronDefinition cronDefinition = CronDefinitionBuilder
+//                    .instanceDefinitionFor(CronType.QUARTZ);
+//            // Create a parser based on provided definition
+//            CronParser parser = new CronParser(cronDefinition);
+//            // Create a descriptor for a specific Locale
+//            CronDescriptor descriptor = CronDescriptor.instance(Locale.UK);
+//            String description = descriptor.describe(parser.parse(cron));
+////             "1 2 0,12 3 4 ? 2021-2023"
+            String description = TimeUtils.cronDescription(cron);
             ObjectNode node = new ObjectMapper().createObjectNode();
             node.put("content", description);
             resp.setData(node);
@@ -301,7 +306,27 @@ public class TestPlanController {
 
         return resp;
     }
-    
+
+    @PostMapping("calculateNextTriggerTime")
+    public Response<ObjectNode> calculateNextTriggerTime(@RequestBody ObjectNode req) {
+        Response<ObjectNode> resp = new Response<ObjectNode>();
+        System.out.println("cronExplain BY IDS" + req.toString());
+        try {
+            String cron = req.get(Parameters.CRON_EXPRESSION).asText();
+            LocalDateTime val = TimeUtils.calculateNextTriggerTime(cron);
+            ObjectNode node = new ObjectMapper().createObjectNode();
+            node.put("content", val.toString());
+            resp.setData(node);
+        } catch (IllegalArgumentException e) {
+            if (log.isErrorEnabled()) {
+                log.error("Parameter is invalid", e);
+            }
+            resp = ControllerUtils.encapsulateErrCode(ErrorCode.PARAMETERS_ARE_INVALID);
+        }
+
+        return resp;
+    }
+
     @PostMapping("getAPITestCaseByPlanId")
     public Response<List<ApiTestCaseVo>> getTestCaseByPlanId(@JsonParam TestPlanVo params,
             @JsonParam PageInfo pageInfo) {
@@ -327,10 +352,39 @@ public class TestPlanController {
         } catch (DataConversionException e) {
             resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
         }
-        
+
         return resp;
     }
-    
+
+    @PostMapping("getUiTestCaseByPlanId")
+    public Response<List<UiTestCaseVo>> getUiTestCaseByPlanId(@JsonParam TestPlanVo params,
+            @JsonParam PageInfo pageInfo) {
+        System.out.println("GET page TEST CASE BY PRAMS: " + params.toString());
+        Response<List<UiTestCaseVo>> resp = new Response<List<UiTestCaseVo>>();
+        try {
+            Pagination<UiTestCase> cases = testPlanService.getUiTestCaseByPlanId(params,
+                    pageInfo.toPage());
+            List<UiTestCaseVo> vos = new ArrayList<UiTestCaseVo>();
+            if (!CollectionUtils.sizeIsEmpty(cases.getList())) {
+                Iterator<UiTestCase> it = cases.getList().iterator();
+                while (it.hasNext()) {
+                    UiTestCase plan = (UiTestCase) it.next();
+                    UiTestCaseVo cpObj = packageUIVo(plan);
+                    vos.add(cpObj);
+                }
+            }
+
+            resp.setData(vos);
+            resp.setTotal(cases.getTotal());
+            resp.setCurrent(cases.getCurrent());
+            resp.setPageSize(cases.getPageSize());
+        } catch (DataConversionException e) {
+            resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
+        }
+
+        return resp;
+    }
+
     private TestPlanVo packageVo(TestPlan tc) throws DataConversionException {
         TestPlanVo cpObj = BeanUtils.copy(tc, TestPlanVo.class).get();
 //        Optional<UiPage> page = uiPageService.getById(tc.getPageId());
@@ -357,7 +411,7 @@ public class TestPlanController {
         cpObj.setState(TestCaseState.valueOf(tc.getEnabled()));
         return cpObj;
     }
-    
+
     private ApiTestCaseVo packageAPITestCaseVo(ApiTestCase tc) throws DataConversionException {
         ApiTestCaseVo cpObj = BeanUtils.copy(tc, ApiTestCaseVo.class).get();
         Optional<ApiDeclaration> api = apiService.getById(tc.getApiId());
@@ -375,7 +429,7 @@ public class TestPlanController {
             if (func.isPresent()) {
                 vo.setFunctionName(func.get().getName());
             }
-            
+
             cpObj.setApi(vo);
         } else {
             // TODO: handle the api is not found
@@ -393,11 +447,44 @@ public class TestPlanController {
             cpObj.setDbConnId(null);
             cpObj.setQuerySql(null);
         }
-        
+
         cpObj.setState(TestCaseState.valueOf(tc.getEnabled()));
         return cpObj;
     }
-    
+
+    private UiTestCaseVo packageUIVo(UiTestCase tc) throws DataConversionException {
+        UiTestCaseVo cpObj = BeanUtils.copy(tc, UiTestCaseVo.class).get();
+        Optional<UiPage> page = uiPageService.getById(tc.getPageId());
+        if (page.isPresent()) {
+            UiPageVo vo = BeanUtils.copy(page.get(), UiPageVo.class).get();
+            Optional<AppStructure> app = appStructureService.getById(vo.getAppId());
+            if (app.isPresent()) {
+                vo.setAppName(app.get().getName());
+            }
+            Optional<AppStructure> module = appStructureService.getById(vo.getModuleId());
+            if (module.isPresent()) {
+                vo.setModuleName(module.get().getName());
+            }
+            Optional<AppStructure> func = appStructureService.getById(vo.getFunctionId());
+            if (func.isPresent()) {
+                vo.setFunctionName(func.get().getName());
+            }
+            cpObj.setPageId(vo.getId());
+            cpObj.setPage(vo);
+        } else {
+            // TODO: handle the api is not found
+        }
+
+        List<TestCase> rs = caseGeneralInfoService
+                .getByParams(new TestCaseVo(cpObj.getGeneralCaseId()));
+        if (!CollectionUtils.sizeIsEmpty(rs)) {
+            cpObj.setGeneralCaseName(rs.get(0).getName());
+        }
+
+        cpObj.setState(TestCaseState.valueOf(tc.getEnabled()));
+        return cpObj;
+    }
+
     private List<TestPlanVo> convertToVo(String idsVal) {
         List<TestPlanVo> rs = new ArrayList<TestPlanVo>();
         if (!StringUtils.isNotBlank(idsVal)) {
@@ -414,7 +501,7 @@ public class TestPlanController {
         }
         return rs;
     }
-    
+
 //    public static void main(String[] args) {
 //        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
 //     // Create a parser based on provided definition
