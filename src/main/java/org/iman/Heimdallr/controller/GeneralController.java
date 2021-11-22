@@ -11,7 +11,9 @@ import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.DBType;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
 import org.iman.Heimdallr.constants.enums.ResultCheckMode;
+import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TestType;
+import org.iman.Heimdallr.constants.enums.TriggerType;
 import org.iman.Heimdallr.vo.Response;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +59,36 @@ public class GeneralController {
     public Response<List<TestType>> getTestTypes(){
         Response<List<TestType>> resp = new Response<List<TestType>>();
         resp.setData(new ArrayList<TestType>(Arrays.asList(TestType.values())));
+        return resp;
+    }
+    
+    @GetMapping("getTriggerType")
+    public Response<List<TriggerType>> getTriggerType(){
+        Response<List<TriggerType>> resp = new Response<List<TriggerType>>();
+        resp.setData(new ArrayList<TriggerType>(Arrays.asList(TriggerType.values())));
+        return resp;
+    }
+    
+    @GetMapping("getTaskStateInQueue")
+    public Response<List<TaskState>> getTaskState(){
+        Response<List<TaskState>> resp = new Response<List<TaskState>>();
+        List<TaskState> rs = new ArrayList<TaskState>();
+        rs.add(TaskState.READY);
+        rs.add(TaskState.RUNNING);
+        rs.add(TaskState.DELAYED);
+        rs.add(TaskState.CANCELD);
+        resp.setData(rs);
+        return resp;
+    }
+    
+    @GetMapping("getTaskStateInHistory")
+    public Response<List<TaskState>> getTaskStateInHistory(){
+        Response<List<TaskState>> resp = new Response<List<TaskState>>();
+        List<TaskState> rs = new ArrayList<TaskState>();
+        rs.add(TaskState.SUCCESS);
+        rs.add(TaskState.FAILED);
+        rs.add(TaskState.DELETED);
+        resp.setData(rs);
         return resp;
     }
 }

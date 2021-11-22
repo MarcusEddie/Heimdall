@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.TestType;
+import org.iman.Heimdallr.constants.enums.TriggerType;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -19,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  */
 @TableName("testPlan")
-public class TestPlan extends BaseEntity implements Serializable{
+public class TestPlan extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -4457744020613287466L;
 
@@ -33,21 +34,23 @@ public class TestPlan extends BaseEntity implements Serializable{
     private Long functionId;
 
     private String name;
-    
+
     private TestType testType;
-    
+
     private CasePriority priority;
-    
+
+    private TriggerType triggerType;
+
     private Boolean repeatFlag;
-    
+
     private LocalDateTime triggerTime;
-    
+
     private String cron;
-    
+
     private LocalDateTime nextTriggerTime;
-    
+
     private JsonNode caseSet;
-    
+
     private Integer caseSize;
 
     public TestPlan() {
@@ -162,15 +165,24 @@ public class TestPlan extends BaseEntity implements Serializable{
         this.caseSize = caseSize;
     }
 
+    public TriggerType getTriggerType() {
+        return triggerType;
+    }
+
+    public void setTriggerType(TriggerType triggerType) {
+        this.triggerType = triggerType;
+    }
+
     @Override
     public String toString() {
-        return "TestPlan [id=" + id + ", appId=" + appId + ", moduleId=" + moduleId
-                + ", functionId=" + functionId + ", name=" + name + ", testType=" + testType
-                + ", priority=" + priority + ", repeatFlag=" + repeatFlag + ", triggerTime=" + triggerTime
-                + ", cron=" + cron + ", nextTriggerTime=" + nextTriggerTime + ", caseSet=" + caseSet
-                + ", caseSize=" + caseSize + ", getCreateBy()=" + getCreateBy() + ", getEnabled()="
-                + getEnabled() + ", getDeleted()=" + getDeleted() + ", getCreateTime()="
-                + getCreateTime() + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
+        return "TestPlan [id=" + id + ", appId=" + appId + ", triggerType=" + triggerType
+                + ", moduleId=" + moduleId + ", functionId=" + functionId + ", name=" + name
+                + ", testType=" + testType + ", priority=" + priority + ", repeatFlag=" + repeatFlag
+                + ", triggerTime=" + triggerTime + ", cron=" + cron + ", nextTriggerTime="
+                + nextTriggerTime + ", caseSet=" + caseSet + ", caseSize=" + caseSize
+                + ", getCreateBy()=" + getCreateBy() + ", getEnabled()=" + getEnabled()
+                + ", getDeleted()=" + getDeleted() + ", getCreateTime()=" + getCreateTime()
+                + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
                 + getModifiedTime() + "]";
     }
 }

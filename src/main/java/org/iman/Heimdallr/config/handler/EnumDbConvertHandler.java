@@ -21,14 +21,15 @@ import org.iman.Heimdallr.constants.enums.ResultCheckMode;
 import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TaskType;
 import org.iman.Heimdallr.constants.enums.TestType;
-
+import org.iman.Heimdallr.constants.enums.TriggerType;
 
 /**
  * @author ey
  *
  */
 @MappedTypes({ HttpMethod.class, CasePriority.class, ResultCheckMode.class, DBType.class,
-        FuncTag.class, Action.class,TestType.class, TaskState.class, TaskType.class })
+        FuncTag.class, Action.class, TestType.class, TaskState.class, TaskType.class,
+        TriggerType.class })
 public class EnumDbConvertHandler<T extends BaseEnum> extends BaseTypeHandler<T> {
 
     private Class<T> enumType;

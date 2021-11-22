@@ -15,7 +15,8 @@ public enum TaskState implements BaseEnum {
     DELAYED(3, "Delay"), 
     CANCELD(4, "Canceled"),
     SUCCESS(5, "Successful"), 
-    FAILED(6, "Failed");
+    FAILED(6, "Failed"), 
+    DELETED(7, "Deleted");
 
     private Integer level;
 

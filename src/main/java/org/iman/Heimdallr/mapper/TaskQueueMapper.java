@@ -25,11 +25,16 @@ public interface TaskQueueMapper extends BaseMapper<TaskQueue> {
             @Param("offset") Integer offset, @Param("capacity") Integer capacity);
 
     public Integer countByPage(@Param("criteria") TaskQueue criteria);
+    
+    public List<TaskQueue> selectInQueues(@Param("criteria") TaskQueue criteria,
+            @Param("offset") Integer offset, @Param("capacity") Integer capacity);
+
+    public Integer countInQueues(@Param("criteria") TaskQueue criteria);
 
     public int deleteBy(TaskQueue criteria);
 
     public int stateSwitch(TaskQueue criteria);
-
+    
     public int updateById(TaskQueue testCase);
 
 }

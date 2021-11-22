@@ -3,11 +3,13 @@ package org.iman.Heimdallr.vo;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TaskType;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.constants.enums.TestType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -27,10 +29,13 @@ public class ExecHistoryVo implements Serializable{
     @JsonProperty("triggerTime")
     private LocalDateTime triggerTime;
     @JsonProperty("details")
+    private String detailsVal;
+    @JsonIgnore
     private JsonNode details;
     @JsonProperty("testType")
     private TestType testType;
-    
+    @JsonProperty("priority")
+    private CasePriority priority;
     @JsonProperty("state")
     private TestCaseState state;
 
@@ -114,10 +119,27 @@ public class ExecHistoryVo implements Serializable{
         this.state = state;
     }
 
+    public CasePriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(CasePriority priority) {
+        this.priority = priority;
+    }
+
+    public String getDetailsVal() {
+        return detailsVal;
+    }
+
+    public void setDetailsVal(String detailsVal) {
+        this.detailsVal = detailsVal;
+    }
+
     @Override
     public String toString() {
         return "ExecHistoryVo [id=" + id + ", planId=" + planId + ", planName=" + planName
                 + ", type=" + type + ", taskState=" + taskState + ", triggerTime=" + triggerTime
-                + ", details=" + details + ", testType=" + testType + ", state=" + state + "]";
+                + ", detailsVal=" + detailsVal + ", details=" + details + ", testType=" + testType
+                + ", priority=" + priority + ", state=" + state + "]";
     }
 }

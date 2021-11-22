@@ -41,6 +41,8 @@ public class TaskQueue extends BaseEntity implements Serializable {
 
     private TestType testType;
 
+    private Integer progress;
+    
     public TaskQueue() {
         super();
     }
@@ -113,13 +115,23 @@ public class TaskQueue extends BaseEntity implements Serializable {
         this.testType = testType;
     }
 
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
     @Override
     public String toString() {
         return "TaskQueue [id=" + id + ", planId=" + planId + ", planName=" + planName + ", type="
                 + type + ", taskState=" + taskState + ", priority=" + priority + ", triggerTime="
-                + triggerTime + ", testType=" + testType + ", getCreateBy()=" + getCreateBy()
-                + ", getEnabled()=" + getEnabled() + ", getDeleted()=" + getDeleted()
-                + ", getCreateTime()=" + getCreateTime() + ", getModifiedBy()=" + getModifiedBy()
-                + ", getModifiedTime()=" + getModifiedTime() + "]";
+                + triggerTime + ", testType=" + testType + ", progress=" + progress
+                + ", getCreateBy()=" + getCreateBy() + ", getEnabled()=" + getEnabled()
+                + ", getDeleted()=" + getDeleted() + ", getCreateTime()=" + getCreateTime()
+                + ", getModifiedBy()=" + getModifiedBy() + ", getModifiedTime()="
+                + getModifiedTime() + "]";
     }
+    
 }

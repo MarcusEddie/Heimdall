@@ -20,7 +20,9 @@ public enum FuncTag implements BaseEnum {
     PAGE_DECLARATION(7, "pageDeclaration"), 
     TEST_DB_CONNECTION_INFO(8, "testDBConnectionInfo"),
     UI_TEST_CASE_DETAILS(9, "uiTestCaseDetails"),
-    TEST_PLAN(10, "testPlan");
+    TEST_PLAN(10, "testPlan"),
+    TASK_QUEUE(11, "taskQueue"),
+    EXEC_HISTORY(12, "execHistory");
 
     private Integer code;
     private String val;

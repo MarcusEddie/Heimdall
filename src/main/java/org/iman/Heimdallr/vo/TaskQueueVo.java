@@ -32,7 +32,9 @@ public class TaskQueueVo implements Serializable{
     private TestType testType;
     @JsonProperty("state")
     private TestCaseState state;
-
+    @JsonProperty("progress")
+    private Integer progress;
+    
     public TaskQueueVo() {
         super();
     }
@@ -113,11 +115,19 @@ public class TaskQueueVo implements Serializable{
         this.priority = priority;
     }
 
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
     @Override
     public String toString() {
         return "TaskQueueVo [id=" + id + ", planId=" + planId + ", planName=" + planName + ", type="
                 + type + ", taskState=" + taskState + ", priority=" + priority + ", triggerTime="
-                + triggerTime + ", testType=" + testType + ", state=" + state + "]";
+                + triggerTime + ", testType=" + testType + ", state=" + state + ", progress="
+                + progress + "]";
     }
-
 }

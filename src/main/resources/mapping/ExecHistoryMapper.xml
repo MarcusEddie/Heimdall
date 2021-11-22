@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.iman.Heimdallr.mapper.TaskQueueMapper">
+<mapper namespace="org.iman.Heimdallr.mapper.ExecHistoryMapper">
     
-    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
-        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
-        from  taskQueue tq
+    <select id="selectBy" parameterType="org.iman.Heimdallr.entity.ExecHistory" resultType="org.iman.Heimdallr.entity.ExecHistory">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.details, tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  execHistory tq
         where 1 = 1
         <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
         <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
@@ -13,7 +13,6 @@
         <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
         <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
         <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
@@ -25,15 +24,15 @@
         </choose>
     </select>
     
-    <select id="selectById" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
-        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
-        from  taskQueue tq
+    <select id="selectById" parameterType="org.iman.Heimdallr.entity.ExecHistory" resultType="org.iman.Heimdallr.entity.ExecHistory">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.details, tq.priority,  tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  execHistory tq
         where tq.id = #{id}
     </select>
     
-    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
-       select tq.id, tq.planId, tq.planName,  tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
-        from  taskQueue tq
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.ExecHistory" resultType="org.iman.Heimdallr.entity.ExecHistory">
+       select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.details, tq.priority,  tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  execHistory tq
         where 1 = 1
         <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
         <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
@@ -42,7 +41,6 @@
         <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
         <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
         <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
@@ -56,43 +54,9 @@
         limit #{offset}, #{capacity}
     </select>
     
-    <select id="selectInQueues" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
-       select tq.id, tq.planId, tq.planName,  tq.type, tq.taskState, tq.triggerTime, tq.progress, tq.testType, tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
-        from  taskQueue tq
-        where 1=1
-        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <choose>
-            <when test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </when> 
-            <otherwise>and tq.taskState in (1,2,3,4) </otherwise>
-        </choose>
-        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <choose>
-            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tq.deleted = 1 </when> 
-            <otherwise>and tq.deleted = 0 </otherwise>
-        </choose>
-        
-        limit #{offset}, #{capacity}
-    </select>
-    
-    <select id="countInQueues" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="java.lang.Integer">
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.ExecHistory" resultType="java.lang.Integer">
         select count(tq.id)
-        from  taskQueue tq
-        where 1=1
-        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <choose>
-            <when test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </when> 
-            <otherwise>and tq.taskState in (1,2,3,4) </otherwise>
-        </choose>
-        <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <choose>
-            <when test = 'criteria.deleted != null and criteria.deleted == true'> and tq.deleted = 1 </when> 
-            <otherwise>and tq.deleted = 0 </otherwise>
-        </choose>
-    </select>
-    
-    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="java.lang.Integer">
-        select count(tq.id)
-        from  taskQueue tq
+        from  execHistory tq
         where 1 = 1
         <if test = 'criteria.id != null'> and tq.id = #{criteria.id} </if>
         <if test = 'criteria.planId != null'> and tq.planId = #{criteria.planId} </if>
@@ -101,7 +65,6 @@
         <if test = 'criteria.taskState != null'> and tq.taskState = #{criteria.taskState} </if>
         <if test = 'criteria.triggerTime != null'> and tq.triggerTime = #{criteria.triggerTime}</if>
         <if test = 'criteria.testType != null'> and tq.testType = #{criteria.testType} </if>
-        <if test = 'criteria.priority != null'> and tq.priority = #{criteria.priority} </if>
         <choose>
             <when test = 'criteria.enabled != null and criteria.enabled == false'> and tq.enabled = 0 </when>
             <when test = 'criteria.enabled != null and criteria.enabled == true'> and tq.enabled = 1 </when>
@@ -113,20 +76,20 @@
         </choose>
     </select>
     
-    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.TaskQueue">
-        update taskQueue
+    <update id="deleteBy" parameterType = "org.iman.Heimdallr.entity.ExecHistory">
+        update execHistory
         set deleted = 1
         where id = #{id}
     </update>
     
-    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.TaskQueue">
-        update taskQueue
-        set enabled = #{enabled}, taskState = #{taskState},  progress = null
+    <update id="stateSwitch" parameterType = "org.iman.Heimdallr.entity.ExecHistory">
+        update execHistory
+        set enabled = #{enabled}, taskState = #{taskState}
         where id = #{id}
     </update>
     
-    <update id="updateById" parameterType="org.iman.Heimdallr.entity.TaskQueue">
-        update taskQueue
+    <update id="updateById" parameterType="org.iman.Heimdallr.entity.ExecHistory">
+        update execHistory
         <trim prefix="set" suffixOverrides="," suffix=" where id = #{id}">
             <if test='planId != null'> planId = #{planId}, </if>
             <if test='planName != null and planName.trim() != &quot;&quot;'> planName = #{planName}, </if>
@@ -138,8 +101,8 @@
         </trim>
     </update>
     
-    <update id="changeToDelay" parameterType="org.iman.Heimdallr.entity.TaskQueue">
-        update taskQueue
+    <update id="changeToDelay" parameterType="org.iman.Heimdallr.entity.ExecHistory">
+        update execHistory
         set modifiedBy = #{modifiedBy}, taskState = #{taskState}
         where enabled = 1 and deleted = 0 and taskState = 1 and triggerTime  <![CDATA[ < ]]>  #{triggerTime}
     </update>

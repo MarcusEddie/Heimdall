@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.constants.enums.TestType;
+import org.iman.Heimdallr.constants.enums.TriggerType;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -41,9 +43,13 @@ public class TestPlanVo implements Serializable{
     @JsonProperty("priority")
     private CasePriority priority;
     
+    @JsonProperty("triggerType")
+    private TriggerType triggerType;
+    
     @JsonProperty("repeatFlag")
     private Boolean repeatFlag;
     
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("triggerTime")
     private LocalDateTime triggerTime;
     
@@ -155,7 +161,7 @@ public class TestPlanVo implements Serializable{
     }
 
     public void setRepeatFlag(Boolean repeat) {
-        this.repeatFlag = repeatFlag;
+        this.repeatFlag = repeat;
     }
 
     public LocalDateTime getTriggerTime() {
@@ -206,13 +212,22 @@ public class TestPlanVo implements Serializable{
         this.caseSize = caseSize;
     }
 
+    public TriggerType getTriggerType() {
+        return triggerType;
+    }
+
+    public void setTriggerType(TriggerType triggerType) {
+        this.triggerType = triggerType;
+    }
+
     @Override
     public String toString() {
         return "TestPlanVo [id=" + id + ", appId=" + appId + ", appName=" + appName + ", moduleId="
                 + moduleId + ", moduleName=" + moduleName + ", functionId=" + functionId
                 + ", functionName=" + functionName + ", name=" + name + ", testType=" + testType
-                + ", priority=" + priority + ", repeatFlag=" + repeatFlag + ", triggerTime=" + triggerTime
-                + ", cron=" + cron + ", nextTriggerTime=" + nextTriggerTime + ", caseSet=" + caseSet
-                + ", caseSize=" + caseSize + ", state=" + state + "]";
+                + ", priority=" + priority + ", triggerType=" + triggerType + ", repeatFlag="
+                + repeatFlag + ", triggerTime=" + triggerTime + ", cron=" + cron
+                + ", nextTriggerTime=" + nextTriggerTime + ", caseSet=" + caseSet + ", caseSize="
+                + caseSize + ", state=" + state + "]";
     }
 }

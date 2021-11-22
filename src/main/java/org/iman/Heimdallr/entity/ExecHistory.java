@@ -6,6 +6,7 @@ package org.iman.Heimdallr.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import org.iman.Heimdallr.constants.enums.CasePriority;
 import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TaskType;
 import org.iman.Heimdallr.constants.enums.TestType;
@@ -30,14 +31,16 @@ public class ExecHistory extends BaseEntity implements Serializable {
     private Long planId;
 
     private String planName;
-    
+
     private TaskType type;
-    
+
     private TaskState taskState;
 
     private LocalDateTime triggerTime;
-    
+
     private JsonNode details;
+
+    private CasePriority priority;
 
     private TestType testType;
 
@@ -113,13 +116,21 @@ public class ExecHistory extends BaseEntity implements Serializable {
         this.testType = testType;
     }
 
+    public CasePriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(CasePriority priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "ExecHistory [id=" + id + ", planId=" + planId + ", planName=" + planName + ", type="
                 + type + ", taskState=" + taskState + ", triggerTime=" + triggerTime + ", details="
-                + details + ", testType=" + testType + ", getCreateBy()=" + getCreateBy()
-                + ", getEnabled()=" + getEnabled() + ", getDeleted()=" + getDeleted()
-                + ", getCreateTime()=" + getCreateTime() + ", getModifiedBy()=" + getModifiedBy()
-                + ", getModifiedTime()=" + getModifiedTime() + "]";
+                + details + ", testType=" + testType + ", priority=" + priority + ", getCreateBy()="
+                + getCreateBy() + ", getEnabled()=" + getEnabled() + ", getDeleted()="
+                + getDeleted() + ", getCreateTime()=" + getCreateTime() + ", getModifiedBy()="
+                + getModifiedBy() + ", getModifiedTime()=" + getModifiedTime() + "]";
     }
 }

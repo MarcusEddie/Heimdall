@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
+import org.iman.Heimdallr.constants.enums.TriggerType;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TestPlan;
@@ -68,6 +69,11 @@ public class TestPlanServiceImpl implements TestPlanService {
         }
         plan.setCaseSize(cnt);
         
+        if (plan.getTriggerType().equals(TriggerType.JENKINS)) {
+            plan.setTriggerTime(null);
+            plan.setRepeatFlag(true);
+            plan.setCron(null);
+        }
         
         testPlanMapper.insert(plan);
         
@@ -93,7 +99,7 @@ public class TestPlanServiceImpl implements TestPlanService {
             Iterator<TestPlan> it = plans.iterator();
             while (it.hasNext()) {
                 TestPlan testPlan = (TestPlan) it.next();
-                if (testPlan.getRepeatFlag()) {
+                if (testPlan.getRepeatFlag() && testPlan.getTriggerType().equals(TriggerType.SCHEDULING)) {
                     testPlan.setNextTriggerTime(TimeUtils.calculateNextTriggerTime(testPlan.getCron()));
                 }
             }
@@ -177,7 +183,7 @@ public class TestPlanServiceImpl implements TestPlanService {
         }
         
         TestPlan rs = plans.get(0);
-        if (rs.getRepeatFlag()) {
+        if (rs.getRepeatFlag() && rs.getTriggerType().equals(TriggerType.SCHEDULING)) {
             rs.setNextTriggerTime(TimeUtils.calculateNextTriggerTime(rs.getCron()));
         }
         
