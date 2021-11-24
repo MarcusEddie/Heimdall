@@ -1,6 +1,7 @@
 package org.iman.Heimdallr.service.impl;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import org.iman.Heimdallr.constants.enums.Action;
 import org.iman.Heimdallr.constants.enums.FuncTag;
 import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
+import org.iman.Heimdallr.constants.enums.TestType;
 import org.iman.Heimdallr.entity.ExecHistory;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TaskQueue;
@@ -64,7 +66,7 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         historyVo.setDetails(details);
 
         taskQueueMapper.deleteBy(task);
-        
+
         ExecHistory history = execHistoryService.save(historyVo);
         return Optional.of(history);
     }
@@ -165,6 +167,7 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         }
 
         try {
+            queue.setProgress(0);
             enqueue(queue);
             dataHistoryService.save(null, queue, queue.getId(), Action.CREATE,
                     FuncTag.UI_TEST_CASE_DETAILS, Consts.SYSTEM_ADMIN);
@@ -236,6 +239,31 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         }
 
         return Optional.of(plan);
+    }
+
+    @Override
+    public Optional<TaskQueue> requestATask(TestType testType) throws DataConversionException {
+        LocalDateTime end = LocalDateTime.now().plusSeconds(5L);
+        TaskQueue criteria = new TaskQueue();
+        criteria.setTestType(testType);
+        criteria.setTaskState(TaskState.READY);
+        criteria.setTriggerTime(end);
+        TaskQueue task = taskQueueMapper.pickOneReadyTask(criteria);
+        if (null != task && null != task.getId()) {
+            task.setTaskState(TaskState.RUNNING);
+//            taskQueueMapper.updateById(task);
+            return Optional.of(task);
+        }
+        criteria.setTaskState(TaskState.DELAYED);
+        criteria.setTriggerTime(null);
+        TaskQueue delayTask = taskQueueMapper.pickOneDelayTask(criteria);
+        if (null != delayTask && null != delayTask.getId()) {
+            delayTask.setTaskState(TaskState.RUNNING);
+//            taskQueueMapper.updateById(delayTask);
+            return Optional.of(delayTask);
+        }
+        
+        return Optional.empty();
     }
 
 }

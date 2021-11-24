@@ -31,6 +31,23 @@
         where tq.id = #{id}
     </select>
     
+    <select id="pickOneTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
+    </select>
+    
+    <select id="pickOneReadyTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
+    </select>
+    
+    <select id="pickOneDelayTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
+        select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
+        from  taskQueue tq
+        where tq.testType = #{testType} and tq.taskState = #{taskState} ORDER BY tq.triggerTime ASC LIMIT 1
+    </select>
     <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
        select tq.id, tq.planId, tq.planName,  tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
         from  taskQueue tq

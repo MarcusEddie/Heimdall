@@ -31,6 +31,10 @@ public interface TaskQueueMapper extends BaseMapper<TaskQueue> {
 
     public Integer countInQueues(@Param("criteria") TaskQueue criteria);
 
+    public TaskQueue pickOneReadyTask(TaskQueue criteria);
+    
+    public TaskQueue pickOneDelayTask(TaskQueue criteria);
+    
     public int deleteBy(TaskQueue criteria);
 
     public int stateSwitch(TaskQueue criteria);

@@ -3,6 +3,7 @@ package org.iman.Heimdallr.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.iman.Heimdallr.constants.enums.TestType;
 import org.iman.Heimdallr.entity.ExecHistory;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TaskQueue;
@@ -16,6 +17,8 @@ public interface TaskQueueService {
     public TaskQueue save(TaskQueueVo vo) throws DataConversionException;
     
     public Pagination<TaskQueue> getByParams(TaskQueueVo criteria, Page page) throws DataConversionException;
+    
+    public Optional<TaskQueue> requestATask(TestType testType) throws DataConversionException;
     
     public Optional<TaskQueue> getById(Long id) throws DataConversionException;
     

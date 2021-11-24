@@ -12,4 +12,5 @@ public class HeimdallrApplication {
 		SpringApplication.run(HeimdallrApplication.class, args);
 	}
 
+	// YONG Debug mode
 }

@@ -1,6 +1,7 @@
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  this config used to print sql in local to see the sql
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: false
   global-config:
     db-column-underline: false

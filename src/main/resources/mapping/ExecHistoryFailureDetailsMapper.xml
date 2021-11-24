@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.iman.Heimdallr.mapper.ExecHistoryFailureDetailsMapper">
+    
+    <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.ExecHistoryFailureDetails" resultType="org.iman.Heimdallr.entity.ExecHistoryFailureDetails">
+        select ad.id, ad.historyId, ad.caseName, ad.caseError ad.enabled, ad.deleted, ad.createBy, ad.createTime, ad.modifiedBy, ad.modifiedTime
+        from  execHistoryFailureDetails ad
+        where 1 = 1
+        <if test = 'criteria.id != null'> and ad.id = #{criteria.id} </if>
+        <if test = 'criteria.historyId != null'> and ad.historyId = #{criteria.historyId} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and ad.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and ad.deleted = 1 </when> 
+            <otherwise>and ad.deleted = 0 </otherwise>
+        </choose>
+        limit #{offset}, #{capacity}
+    </select>
+    
+    <select id="countByPage" parameterType="org.iman.Heimdallr.entity.ExecHistoryFailureDetails" resultType="java.lang.Integer">
+        select count(ad.id)
+        from  execHistoryFailureDetails ad
+        where 1 = 1
+        <if test = 'criteria.id != null'> and ad.id = #{criteria.id} </if>
+        <if test = 'criteria.historyId != null'> and ad.historyId = #{criteria.historyId} </if>
+        <choose>
+            <when test = 'criteria.enabled != null and criteria.enabled == false'> and ad.enabled = 0 </when>
+            <when test = 'criteria.enabled != null and criteria.enabled == true'> and ad.enabled = 1 </when>
+            <otherwise></otherwise>
+        </choose>
+        <choose>
+            <when test = 'criteria.deleted != null and criteria.deleted == true'> and ad.deleted = 1 </when> 
+            <otherwise>and ad.deleted = 0 </otherwise>
+        </choose>
+    </select>
+</mapper>

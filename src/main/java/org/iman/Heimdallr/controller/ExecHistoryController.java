@@ -12,11 +12,14 @@ import org.iman.Heimdallr.config.annotations.JsonParam;
 import org.iman.Heimdallr.constants.enums.ErrorCode;
 import org.iman.Heimdallr.constants.enums.TestCaseState;
 import org.iman.Heimdallr.entity.ExecHistory;
+import org.iman.Heimdallr.entity.ExecHistoryFailureDetails;
 import org.iman.Heimdallr.entity.TaskQueue;
 import org.iman.Heimdallr.exception.DataConversionException;
+import org.iman.Heimdallr.service.ExecHistoryFailureDetailsService;
 import org.iman.Heimdallr.service.ExecHistoryService;
 import org.iman.Heimdallr.utils.BeanUtils;
 import org.iman.Heimdallr.utils.ControllerUtils;
+import org.iman.Heimdallr.vo.ExecHistoryFailureDetailsVo;
 import org.iman.Heimdallr.vo.ExecHistoryVo;
 import org.iman.Heimdallr.vo.PageInfo;
 import org.iman.Heimdallr.vo.Pagination;
@@ -43,6 +46,8 @@ public class ExecHistoryController {
     
     @Resource
     private ExecHistoryService execHistoryService;
+    @Resource
+    private ExecHistoryFailureDetailsService execHistoryFailureDetailsService;
     
     @PostMapping("getHistoryByParams")
     public Response<List<ExecHistoryVo>> getHistoryByParams(@JsonParam ExecHistoryVo params,
@@ -89,29 +94,44 @@ public class ExecHistoryController {
         return resp;
     }
     
+    @PostMapping("getFailureDetailsByHistoryId")
+    public Response<List<ExecHistoryFailureDetailsVo>> getFailureDetailsByHistoryId(
+            @JsonParam ExecHistoryFailureDetailsVo params, @JsonParam PageInfo pageInfo) {
+        Response<List<ExecHistoryFailureDetailsVo>> resp = new Response<List<ExecHistoryFailureDetailsVo>>();
+        System.out.println("GetFailureDetailsByHistoryId BY ID" + params.toString());
+
+        try {
+            Pagination<ExecHistoryFailureDetails> logs = execHistoryFailureDetailsService
+                    .getByParams(params, pageInfo.toPage());
+            List<ExecHistoryFailureDetailsVo> rs = new ArrayList<ExecHistoryFailureDetailsVo>();
+            if (!CollectionUtils.sizeIsEmpty(logs.getList())) {
+                Iterator<ExecHistoryFailureDetails> it = logs.getList().iterator();
+                while (it.hasNext()) {
+                    ExecHistoryFailureDetails details = (ExecHistoryFailureDetails) it.next();
+                    ExecHistoryFailureDetailsVo cpObj = BeanUtils
+                            .copy(details, ExecHistoryFailureDetailsVo.class).get();
+                    cpObj.setCaseErrorVal(prettyLog(details.getCaseError()));
+                    rs.add(cpObj);
+                }
+            }
+
+            resp.setData(rs);
+            resp.setTotal(logs.getTotal());
+            resp.setCurrent(logs.getCurrent());
+            resp.setPageSize(logs.getPageSize());
+        } catch (DataConversionException e) {
+            if (log.isErrorEnabled()) {
+                log.error("Query failed", e);
+            }
+            resp = ControllerUtils.encapsulateErrCode(ErrorCode.DATA_CONVERSION_FAILURE);
+        }
+
+        return resp;
+    }
+    
     private ExecHistoryVo packageVo(ExecHistory tc) throws DataConversionException {
         ExecHistoryVo cpObj = BeanUtils.copy(tc, ExecHistoryVo.class).get();
         cpObj.setDetailsVal(prettyLog(tc.getDetails()));
-//        Optional<UiPage> page = uiPageService.getById(tc.getPageId());
-//        if (page.isPresent()) {
-//            UiPageVo vo = BeanUtils.copy(page.get(), UiPageVo.class).get();
-//            Optional<AppStructure> app = appStructureService.getById(vo.getAppId());
-//            if (app.isPresent()) {
-//                vo.setAppName(app.get().getName());
-//            }
-//            Optional<AppStructure> module = appStructureService.getById(vo.getModuleId());
-//            if (module.isPresent()) {
-//                vo.setModuleName(module.get().getName());
-//            }
-//            Optional<AppStructure> func = appStructureService.getById(vo.getFunctionId());
-//            if (func.isPresent()) {
-//                vo.setFunctionName(func.get().getName());
-//            }
-//            cpObj.setPageId(vo.getId());
-//            cpObj.setPage(vo);
-//        } else {
-//            // TODO: handle the api is not found
-//        }
         
         cpObj.setState(TestCaseState.valueOf(tc.getEnabled()));
         return cpObj;
