@@ -66,9 +66,12 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         historyVo.setDetails(details);
 
         taskQueueMapper.deleteBy(task);
+        ExecHistory history = null;
+        if (!(task.getTaskState().equals(TaskState.SUCCESS) || task.getTaskState().equals(TaskState.FAILED))) {
+            history = execHistoryService.save(historyVo, null);
+        }
 
-        ExecHistory history = execHistoryService.save(historyVo);
-        return Optional.of(history);
+        return Optional.ofNullable(history);
     }
 
     @Override
@@ -160,14 +163,14 @@ public class TaskQueueServiceImpl implements TaskQueueService {
 
         Optional<TaskQueue> cpObj = BeanUtils.copy(vo, TaskQueue.class);
         TaskQueue queue = cpObj.get();
-
-        if (null == queue.getTriggerTime()) {
-            TestPlan plan = testPlanService.getById(queue.getPlanId()).get();
-            queue.setTriggerTime(plan.getTriggerTime());
-        }
+        queue.setTriggerTime(LocalDateTime.now());
+//        if (null == queue.getTriggerTime()) {
+//            TestPlan plan = testPlanService.getById(queue.getPlanId()).get();
+//            queue.setTriggerTime(plan.getTriggerTime());
+//        }
 
         try {
-            queue.setProgress(0);
+//            queue.setProgress(0);
             enqueue(queue);
             dataHistoryService.save(null, queue, queue.getId(), Action.CREATE,
                     FuncTag.UI_TEST_CASE_DETAILS, Consts.SYSTEM_ADMIN);
@@ -251,7 +254,7 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         TaskQueue task = taskQueueMapper.pickOneReadyTask(criteria);
         if (null != task && null != task.getId()) {
             task.setTaskState(TaskState.RUNNING);
-//            taskQueueMapper.updateById(task);
+            taskQueueMapper.updateById(task);
             return Optional.of(task);
         }
         criteria.setTaskState(TaskState.DELAYED);
@@ -259,7 +262,7 @@ public class TaskQueueServiceImpl implements TaskQueueService {
         TaskQueue delayTask = taskQueueMapper.pickOneDelayTask(criteria);
         if (null != delayTask && null != delayTask.getId()) {
             delayTask.setTaskState(TaskState.RUNNING);
-//            taskQueueMapper.updateById(delayTask);
+            taskQueueMapper.updateById(delayTask);
             return Optional.of(delayTask);
         }
         

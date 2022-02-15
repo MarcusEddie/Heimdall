@@ -1,5 +1,7 @@
 package org.iman.Heimdallr.service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.iman.Heimdallr.entity.ExecHistory;
@@ -11,7 +13,7 @@ import org.iman.Heimdallr.vo.Pagination;
 
 public interface ExecHistoryService {
 
-    public ExecHistory save(ExecHistoryVo history) throws DataConversionException;
+    public ExecHistory save(ExecHistoryVo history, Map<String, List<String>> errors) throws DataConversionException;
     
     public Optional<TaskQueue> reEnqueue(ExecHistoryVo history) throws DataConversionException;
     

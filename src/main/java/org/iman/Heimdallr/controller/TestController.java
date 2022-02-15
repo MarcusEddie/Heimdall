@@ -2,6 +2,7 @@ package org.iman.Heimdallr.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,21 +20,25 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.iman.Heimdallr.constants.enums.HttpMethod;
+import org.iman.Heimdallr.constants.enums.TaskState;
 import org.iman.Heimdallr.constants.enums.TestType;
 import org.iman.Heimdallr.entity.ApiDeclaration;
 import org.iman.Heimdallr.entity.ApiTestCase;
 import org.iman.Heimdallr.entity.Page;
 import org.iman.Heimdallr.entity.TaskQueue;
+import org.iman.Heimdallr.entity.TestPlan;
 import org.iman.Heimdallr.exception.DataConversionException;
 import org.iman.Heimdallr.service.APIService;
-import org.iman.Heimdallr.service.ExecHistoryFailureDetailsService;
+import org.iman.Heimdallr.service.ExecHistoryService;
 import org.iman.Heimdallr.service.TaskQueueService;
 import org.iman.Heimdallr.service.TestPlanService;
 import org.iman.Heimdallr.utils.ObjectUtils;
 import org.iman.Heimdallr.vo.ApiDeclarationVo;
 import org.iman.Heimdallr.vo.AppVo;
+import org.iman.Heimdallr.vo.ExecHistoryVo;
 import org.iman.Heimdallr.vo.Pagination;
 import org.iman.Heimdallr.vo.Response;
+import org.iman.Heimdallr.vo.TaskQueueVo;
 import org.iman.Heimdallr.vo.TestPlanVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,8 +62,8 @@ public class TestController {
     @Autowired
     private APIService apiService;
     @Autowired
-    private ExecHistoryFailureDetailsService execHistoryFailureDetailsService;
-
+    private ExecHistoryService execHistoryService;
+    
     private Map<String, String> globalVariable = new HashedMap<String, String>();
 
     @PostMapping("a")
@@ -70,8 +75,9 @@ public class TestController {
 
     public void execute() {
         try {
+            Long start = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
             Optional<TaskQueue> task = taskQueueService.requestATask(TestType.API_TEST);
-//            System.out.println(task.toString());
+            System.out.println(task.toString());
             if (task.isPresent()) {
                 TestPlanVo plan = new TestPlanVo(task.get().getPlanId());
                 Page page = new Page();
@@ -79,11 +85,14 @@ public class TestController {
                 page.setPageSize(Integer.MAX_VALUE);
                 Pagination<ApiTestCase> cases = testPlanService.getAPITestCasesByPlanId(plan, page);
 //                System.out.println(cases.getList().size());
+                Map<String, List<String>> errors = new HashedMap<String, List<String>>();
                 if (task.get().getTriggerTime().isBefore(LocalDateTime.now())) {
-                    exec(cases.getList());
+                    errors = exec(cases.getList());
                 } else {
-                    waitAndExec(task.get(), cases.getList());
+                    errors = waitAndExec(task.get(), cases.getList());
                 }
+                Long period = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) - start;
+                responseToHub(task.get(), errors, period);
             }
         } catch (DataConversionException e) {
             // TODO Auto-generated catch block
@@ -91,6 +100,39 @@ public class TestController {
         }
     }
 
+    private Boolean responseToHub(TaskQueue task, Map<String, List<String>> errors, Long period) {
+        ExecHistoryVo history = new ExecHistoryVo();
+        history.setPlanId(task.getPlanId());
+        history.setPlanName(task.getPlanName());
+        if(null != errors && errors.size() == 0) {
+            history.setTaskState(TaskState.SUCCESS);
+        } else {
+            history.setTaskState(TaskState.FAILED);
+        }
+        history.setTriggerTime(task.getTriggerTime());
+        history.setPriority(task.getPriority());
+        history.setTestType(task.getTestType());
+        history.setType(task.getType());
+        ObjectNode summary = new ObjectMapper().createObjectNode();
+//        {"Total minutes has ran": 0," "Total success number of cases": 0, "Total nonexecution number of cases": 0}
+        TestPlan plan = testPlanService.getById(task.getPlanId()).get();
+        summary.put("Total number of cases", plan.getCaseSize());
+        summary.put("Total failed number of cases", errors.size());
+        summary.put("Total success number of cases", plan.getCaseSize() - errors.size());
+        Long mins = period / 60;
+        if (period % 60 == 0) {
+            mins +=1;
+        }
+        summary.put("Total minutes has ran", mins);
+        history.setDetails(summary);
+        try {
+            taskQueueService.delete(new TaskQueueVo(task.getId()));
+            execHistoryService.save(history, errors);
+            return true;
+        } catch (DataConversionException e) {
+            return false;
+        }
+    }
 //Call [getTestLinkById] With Parameters And Headers And Get [result]
 //Save Global [globalVariableName] = [323]
 //Save Global [globalVariableName2] From [result.name]
@@ -396,14 +438,16 @@ public class TestController {
         return rs;
     }
 
-    private void waitAndExec(TaskQueue task, List<ApiTestCase> cases) {
+    private Map<String, List<String>> waitAndExec(TaskQueue task, List<ApiTestCase> cases) {
         while (true) {
-            if (task.getTriggerTime().equals(LocalDateTime.now())) {
+            if (task.getTriggerTime().equals(LocalDateTime.now())
+                    || task.getTriggerTime().isAfter(LocalDateTime.now())) {
                 break;
             }
         }
 
-        exec(cases);
+        Map<String, List<String>> errors = exec(cases);
+        return errors;
     }
 
 }

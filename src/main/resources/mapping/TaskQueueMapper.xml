@@ -34,19 +34,19 @@
     <select id="pickOneTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
         select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
         from  taskQueue tq
-        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
+        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.enabled = 1 and tq.deleted = 0 and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
     </select>
     
     <select id="pickOneReadyTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
         select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
         from  taskQueue tq
-        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
+        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.enabled = 1 and tq.deleted = 0 and tq.triggerTime >= NOW() and tq.triggerTime  <![CDATA[ <= ]]>  #{triggerTime} ORDER BY tq.triggerTime ASC LIMIT 1
     </select>
     
     <select id="pickOneDelayTask" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
         select tq.id, tq.planId, tq.planName, tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
         from  taskQueue tq
-        where tq.testType = #{testType} and tq.taskState = #{taskState} ORDER BY tq.triggerTime ASC LIMIT 1
+        where tq.testType = #{testType} and tq.taskState = #{taskState} and tq.enabled = 1 and tq.deleted = 0 ORDER BY tq.triggerTime ASC LIMIT 1
     </select>
     <select id="selectByPage" parameterType="org.iman.Heimdallr.entity.TaskQueue" resultType="org.iman.Heimdallr.entity.TaskQueue">
        select tq.id, tq.planId, tq.planName,  tq.type, tq.taskState, tq.triggerTime, tq.testType, tq.progress,  tq.priority, tq.enabled, tq.deleted, tq.createBy, tq.createTime, tq.modifiedBy, tq.modifiedTime
@@ -158,6 +158,6 @@
     <update id="changeToDelay" parameterType="org.iman.Heimdallr.entity.TaskQueue">
         update taskQueue
         set modifiedBy = #{modifiedBy}, taskState = #{taskState}
-        where enabled = 1 and deleted = 0 and taskState = 1 and triggerTime  <![CDATA[ < ]]>  #{triggerTime}
+        where enabled = 1 and deleted = 0 and taskState = 1 and taskState != 3 and triggerTime  <![CDATA[ < ]]>  #{triggerTime}
     </update>
 </mapper>
